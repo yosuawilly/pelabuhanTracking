@@ -193,7 +193,14 @@ class Home extends CI_Controller{
     }
 
     public function lokasiKapal() {
+        $this->user_data['title'] = My_Util::getTitle('Lokasi Kapal', '-');
+        $this->user_data['lokasi'] = true;
+        $this->user_data['error'] = '';
         
+        $kapals = $this->kapal->findAll();
+        $this->user_data['kapals'] = $kapals;
+        
+        $this->load->view('lokasi_kapal', $this->user_data);
     }
     
 }
