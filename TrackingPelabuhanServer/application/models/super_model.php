@@ -31,13 +31,14 @@ class Super_model extends CI_Model{
         return ($query->num_rows() > 0) ? $query->row() : false;
     }
     
-    public function save($data) {
+    public function save($data, $getID=FALSE) {
         $result = array();
         $this->db->insert($this->table, $data);
         if($this->db->_error_message()){
             $result['error'] = $this->db->_error_message();
         } else $result['error'] = '';
-        $result['result'] = $this->db->insert_id();
+        if($getID) $result['result'] = $this->db->insert_id();
+        else $result['result'] = TRUE;
         return $result;
     }
     
@@ -51,8 +52,9 @@ class Super_model extends CI_Model{
         return $this->update_by_colum($this->get_primary_column(), $valuePrimary, $data);
     }
     
-    public function delete($colum, $valueColum) {
-        $this->db->where($colum, $valueColum);
+    public function delete($valueColum, $colum=NULL) {
+        if($colum!=NULL) $this->db->where($colum, $valueColum);
+        else $this->db->where($this->get_primary_column(), $valueColum);
         return $this->db->delete($this->table);
     }
     
