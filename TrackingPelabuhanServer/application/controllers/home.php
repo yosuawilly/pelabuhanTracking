@@ -59,6 +59,7 @@ class Home extends CI_Controller{
         $this->table->set_template($this->tmpl);
         $this->table->set_heading('Kode Kapal', 'Nama Kapal', 'Ukuran', 'Mesin', 'Action');
         
+        if($kapals)
         foreach ($kapals as $kapal) {
             $button_update_delete = '<div style="float:right;"><a style="margin-right:5px;" href="'.base_url().'home/updateKapal/'.$kapal->kode_kapal.'" class="btn btn-warning">
             <i class="icon icon-pencil"></i> Update</a>';
