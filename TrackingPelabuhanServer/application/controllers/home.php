@@ -36,6 +36,8 @@ class Home extends CI_Controller{
         
         $this->load->library('table');
         
+        $this->load->helper('file');
+        
         $this->load->model('kapal_model', 'kapal');
         
         date_default_timezone_set('Asia/Jakarta');
@@ -194,12 +196,19 @@ class Home extends CI_Controller{
     }
 
     public function lokasiKapal() {
+        $this->load->library('googlemaps');
+        
         $this->user_data['title'] = My_Util::getTitle('Lokasi Kapal', '-');
         $this->user_data['lokasi'] = true;
         $this->user_data['error'] = '';
         
         $kapals = $this->kapal->findAll();
         $this->user_data['kapals'] = $kapals;
+        
+        $config['center'] = '37.4419, -122.1419';
+        $config['zoom'] = 'auto';
+        $this->googlemaps->initialize($config);
+        $this->user_data['map'] = $this->googlemaps->create_map();
         
         $this->load->view('lokasi_kapal', $this->user_data);
     }
