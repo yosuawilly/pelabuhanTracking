@@ -1,8 +1,13 @@
 <?php echo $map['js']; ?>
+<script type="text/javascript" src="js/comet.js"></script>
 <script type="text/javascript">
+    var comet = new Comet('rest/getKordinatKapal/Titanic', function (response){
+        alert(response);
+    });
+    
     jQuery(document).ready(function () {
         $('#show-btn').click(showBtnAction);
-        
+//        comet.connect();
 //        initialize(new google.maps.LatLng(-25.363882, 131.044922));
     });
     

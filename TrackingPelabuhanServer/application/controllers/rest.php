@@ -23,6 +23,20 @@ class Rest extends CI_Controller{
             echo json_encode(My_Util::create_result(false, 'Parameter tidak lengkap'));
             exit();
         }
+        //set_time_limit(0);
+        
+        $result = $this->kapal->get_lokasi_by_name($namaKapal);
+        echo json_encode($result);
+    }
+    
+    public function getKordinatKapal2($namaKapal=NULL) {
+        if($namaKapal==NULL) {
+            echo json_encode(My_Util::create_result(false, 'Parameter tidak lengkap'));
+            exit();
+        }
+        
+        $result = $this->kapal->get_lokasi_by_name($namaKapal);
+        echo json_encode($result);
     }
     
 }

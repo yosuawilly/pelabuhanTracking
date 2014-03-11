@@ -27,6 +27,16 @@ class Kapal_model extends Super_model{
         return $this->lokasi->findBy($this->kode_kapal, $kode_kapal);
     }
     
+    public function get_lokasi_by_name($nama_kapal) {
+        $kapal = $this->findBy($this->nama_kapal, $nama_kapal);
+        if($kapal){
+            $kode_kapal = $kapal->kode_kapal;
+        } else {
+            return My_Util::create_result(false, 'Data tidak ditemukan');
+        }
+        return $this->lokasi->findBy($this->kode_kapal, $kode_kapal);
+    }
+    
     public function save_lokasi($data) {
         return $this->lokasi->save($data);
     }

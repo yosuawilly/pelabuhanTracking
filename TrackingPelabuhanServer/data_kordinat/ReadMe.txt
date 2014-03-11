@@ -1,0 +1,1 @@
+folder data_kordinat to store kordinat kapal permanen
