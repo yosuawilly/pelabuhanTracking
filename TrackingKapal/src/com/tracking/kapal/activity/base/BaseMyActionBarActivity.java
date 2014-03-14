@@ -3,12 +3,11 @@ package com.tracking.kapal.activity.base;
 import com.tracking.kapal.util.Functional;
 
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
-public abstract class BaseMyFragmentActivity extends ActionBarActivity implements Functional{
+public abstract class BaseMyActionBarActivity extends BaseActionBarActivity implements Functional{
     protected boolean inflateView = false;
 	
 	protected MyLayout myLayout = MyLayout.LINEARLAYOUT;

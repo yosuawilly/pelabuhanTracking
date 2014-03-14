@@ -4,24 +4,15 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
     
-    <FrameLayout 
-        android:layout_width="fill_parent"
-        android:layout_height="30dp"
-        android:background="@drawable/bg_header_blue">
-        <TextView 
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Tracking Kapal"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_gravity="center"/>
-    </FrameLayout>
-    
-    <LinearLayout 
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        >
+    <com.tracking.kapal.customcomponent.CustomViewPager
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="0dp"
+        android:orientation="vertical"
+        android:scrollbars="none"
+        android:layout_weight="1">
         
-    </LinearLayout>
+    </com.tracking.kapal.customcomponent.CustomViewPager>
 
 </LinearLayout>

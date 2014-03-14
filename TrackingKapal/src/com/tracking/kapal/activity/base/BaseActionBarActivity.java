@@ -2,11 +2,12 @@ package com.tracking.kapal.activity.base;
 
 import com.tracking.kapal.R;
 import com.tracking.kapal.activity.LoginActivity;
-import android.app.Activity;
+
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 
-public class BaseActivity extends Activity{
+public class BaseActionBarActivity extends ActionBarActivity{
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
