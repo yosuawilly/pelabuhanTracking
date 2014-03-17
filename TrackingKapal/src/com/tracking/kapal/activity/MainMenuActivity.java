@@ -38,7 +38,7 @@ public class MainMenuActivity extends BaseMyActionBarActivity implements ActionB
     	/*init ViewPager*/
     	viewPager = (CustomViewPager) findViewById(R.id.viewPager);
         fragmentAdapter = new FragmentAdapter(getSupportFragmentManager(), this, this);
-        viewPager.setEnableSwipe(true);
+        //viewPager.setEnableSwipe(true);
         viewPager.setOffscreenPageLimit(3);
         viewPager.setAdapter(fragmentAdapter);
         viewPager.setOnPageChangeListener(this);
@@ -81,6 +81,8 @@ public class MainMenuActivity extends BaseMyActionBarActivity implements ActionB
 
 	@Override
 	public void onTabSelected(Tab tab, FragmentTransaction ft) {
+		if(tab.getPosition()==2) viewPager.setEnableSwipe(false);
+		else viewPager.setEnableSwipe(true);
 		viewPager.setCurrentItem(tab.getPosition());
 	}
 
@@ -104,6 +106,8 @@ public class MainMenuActivity extends BaseMyActionBarActivity implements ActionB
 
 	@Override
 	public void onPageSelected(int position) {
+		if(position==2) viewPager.setEnableSwipe(false);
+		else viewPager.setEnableSwipe(true);
 		actionBar.setSelectedNavigationItem(position);
 	}
 

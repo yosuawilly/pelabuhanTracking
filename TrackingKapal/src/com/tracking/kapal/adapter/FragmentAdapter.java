@@ -2,7 +2,7 @@ package com.tracking.kapal.adapter;
 
 import com.tracking.kapal.fragment.AutomaticFragment;
 import com.tracking.kapal.fragment.ManualFragment;
-import com.tracking.kapal.fragment.MapFragment;
+import com.tracking.kapal.fragment.MyMapFragment;
 import com.tracking.kapal.listener.FragmentListener;
 
 import android.content.Context;
@@ -17,7 +17,7 @@ public class FragmentAdapter extends FragmentStatePagerAdapter{
 	
 	private ManualFragment manualFragment;
 	private AutomaticFragment automaticFragment;
-	private MapFragment mapFragment;
+	private MyMapFragment mapFragment;
 
 	public FragmentAdapter(FragmentManager fm, Context context, FragmentListener fragmentListener) {
 		super(fm);
@@ -40,7 +40,7 @@ public class FragmentAdapter extends FragmentStatePagerAdapter{
 			return automaticFragment;
 		case 2:
 			if(mapFragment==null){
-				mapFragment = new MapFragment(context, fragmentListener);
+				mapFragment = new MyMapFragment(context, fragmentListener);
 			}
 			return mapFragment;
 		default:
