@@ -16,24 +16,71 @@
     function showBtnAction(){
         //$namaKapal = $('#pilih-nama-kapal').val();
         $namaKapal = $('#pilih-nama-kapal :selected').text();
+        
+        $.ajax({
+            type : 'get',
+            url : 'rest/getKordinatKapal/'+$namaKapal,
+            dataType : 'json',
+            success : function(response, status, xhr) {
+                if(response.hasOwnProperty('status')){
+                    //alert(response.fullMessage);
+                    initializeMapAndComet(null, null);
+                } else {
+                    //alert(response.lat);
+                    initializeMapAndComet(response.lat, response.lng);
+                }
+            },
+            complete : function(response) {
+                
+            },
+            error: function(xhr, status, errorMsg){
+                alert(errorMsg);
+            }
+        });
+        
+        return false;
+    }
+    
+    function initializeMapAndComet(lat, lng) {
         $('#nama-kapal').html($namaKapal);
         $('#parent-map1').show();
-        initialize(new google.maps.LatLng(-25.363882, 131.044922));
-        return false;
+        if(lat===null & lng===null)
+            initialize(new google.maps.LatLng(25.363882, 431.044922), false);
+        else {
+            //alert('ada'+lat+' '+lng);
+            initialize(new google.maps.LatLng(lat, lng), true);
+        }
+        
+        comet = new Comet('rest/getKordinatKapal2/'+$namaKapal, function (response){
+            try{
+                var lat = response.lat;
+                var lng = response.lng;
+                directLocation(lat, lng);
+            } catch (e){
+                alert(e);
+            }
+        });
+        comet.connect();
     }
     
     var map;
     var marker;
             
-    function initialize(location) {
+    function initialize(location, withMarker) {
+        var useMarker = true;
+        useMarker = withMarker;
+        //if(!useMarker) alert('not');
+        
         var mapOptions = {
-            zoom: 4,
+            zoom: useMarker ? 4 : 2,
 //                    center: new google.maps.LatLng(-25.363882, 131.044922)
             center: location
         };
 
         map = new google.maps.Map(document.getElementById('map1'), mapOptions);
-
+        
+        if(useMarker){
+        
         marker = new google.maps.Marker({
           position: map.getCenter(),
           map: map,
@@ -52,6 +99,8 @@
           map.setZoom(8);
           map.setCenter(marker.getPosition());
         });
+        
+        }
     }
     
     function directLocation(lat, lng){

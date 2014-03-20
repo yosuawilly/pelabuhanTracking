@@ -27,7 +27,8 @@ var Comet = function (data_url, handle_response) {
               setTimeout(function(){ self.connect(); }, 5000);           
             }else {
               // persistent connection
-              self.connect();
+              //self.connect();
+              setTimeout(function(){ self.connect(); }, 1000);
             }
 
             self.noerror = false; 

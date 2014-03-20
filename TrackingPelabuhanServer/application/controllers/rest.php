@@ -23,9 +23,12 @@ class Rest extends CI_Controller{
             echo json_encode(My_Util::create_result(false, 'Parameter tidak lengkap'));
             exit();
         }
-        //set_time_limit(0);
+        if( !($result = My_Util::read_kordinat($namaKapal))){
+            echo json_encode(My_Util::create_result(FALSE, 'Tidak ada kordinat'));
+            exit();
+        }
         
-        $result = $this->kapal->get_lokasi_by_name($namaKapal);
+        //$result = $this->kapal->get_lokasi_by_name($namaKapal);
         echo json_encode($result);
     }
     
@@ -35,8 +38,29 @@ class Rest extends CI_Controller{
             exit();
         }
         
-        $result = $this->kapal->get_lokasi_by_name($namaKapal);
+        while (!($result = My_Util::read_save_kordinat($namaKapal))) {
+            usleep(10000); // sleep 10ms to unload the CPU
+            clearstatcache();
+//            echo json_encode(My_Util::create_result(false, 'Tidak ada data kordinat'));
+//            exit();
+        }
+        
+        //$result = $this->kapal->get_lokasi_by_name($namaKapal);
         echo json_encode($result);
+        flush();
+    }
+    
+    public function sendKordinatKapal($namaKapal=NULL, $lat=NULL, $lng=NULL) {
+        if($namaKapal==NULL || $lat==NULL || $lng==NULL) {
+            echo json_encode(My_Util::create_result(false, 'Parameter tidak lengkap'));
+            exit();
+        }
+        
+        if(My_Util::write_kordinat($namaKapal, $lat, $lng)){
+            echo json_encode(My_Util::create_result(true, 'Sukses'));
+        } else {
+            echo json_encode(My_Util::create_result(false, 'Gagal write kordinat'));
+        }
     }
     
 }
