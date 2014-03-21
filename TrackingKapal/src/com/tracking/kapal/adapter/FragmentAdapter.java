@@ -1,5 +1,7 @@
 package com.tracking.kapal.adapter;
 
+import java.util.List;
+
 import com.tracking.kapal.fragment.AutomaticFragment;
 import com.tracking.kapal.fragment.ManualFragment;
 import com.tracking.kapal.fragment.MyMapFragment;
@@ -9,6 +11,8 @@ import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 
 public class FragmentAdapter extends FragmentStatePagerAdapter{
 	
@@ -18,9 +22,12 @@ public class FragmentAdapter extends FragmentStatePagerAdapter{
 	private ManualFragment manualFragment;
 	private AutomaticFragment automaticFragment;
 	private MyMapFragment mapFragment;
+	
+	FragmentManager fm;
 
 	public FragmentAdapter(FragmentManager fm, Context context, FragmentListener fragmentListener) {
 		super(fm);
+		this.fm = fm;
 		this.context = context;
 		this.fragmentListener = fragmentListener;
 	}
@@ -52,6 +59,23 @@ public class FragmentAdapter extends FragmentStatePagerAdapter{
 	@Override
 	public int getCount() {
 		return 3;
+	}
+	
+	@Override
+	public int getItemPosition(Object object) {
+		return POSITION_NONE;
+	}
+	
+	public void removeAllFragment(){
+		List<Fragment> fragments = fm.getFragments();
+		if(fragments!=null){
+			Log.i("countFragment", String.valueOf(fragments.size()));
+			FragmentTransaction ft = fm.beginTransaction();
+			for(Fragment f : fragments){
+				ft.remove(f);
+			}
+			ft.commit();
+		}
 	}
 
 }

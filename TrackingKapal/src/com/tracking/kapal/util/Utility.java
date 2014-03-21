@@ -12,8 +12,10 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.AssetManager;
 import android.graphics.drawable.Drawable;
+import android.location.LocationManager;
 import android.util.Log;
 
 public class Utility {
@@ -136,6 +138,31 @@ public class Utility {
 			e.printStackTrace();
 		}
 		return files;
+	}
+	
+	public static boolean checkGpsEnable(final Context context){
+		LocationManager manager = (LocationManager) context.getSystemService( Context.LOCATION_SERVICE );
+		if(!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+			AlertDialog.Builder builder = new AlertDialog.Builder(context);
+		    builder.setMessage("Your GPS seems to be disabled, do you want to enable it?")
+		           .setCancelable(false)
+		           .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+		               public void onClick(final DialogInterface dialog, final int id) {
+		                   context.startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+		               }
+		           })
+		           .setNegativeButton("No", new DialogInterface.OnClickListener() {
+		               public void onClick(final DialogInterface dialog, final int id) {
+		                    dialog.cancel();
+		               }
+		           });
+		    final AlertDialog alert = builder.create();
+		    alert.show();
+		    
+		    return false;
+		}
+		
+		return true;
 	}
 
 }

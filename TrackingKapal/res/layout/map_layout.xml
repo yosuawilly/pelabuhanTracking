@@ -4,11 +4,30 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
     
-    <fragment
-        android:id="@+id/map"
-        class="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:name="com.tracking.kapal.MyMapFragment"/>
+    <FrameLayout
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent" >
+        <!--<fragment
+	        android:id="@+id/map"
+	        class="com.google.android.gms.maps.SupportMapFragment"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:name="com.tracking.kapal.MyMapFragment"/>-->
+        
+        <fragment
+	        android:id="@+id/map"
+	        class="com.google.android.gms.maps.SupportMapFragment"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent" />
+        
+        <ImageButton
+	        android:id="@+id/myMapLocationButton"
+	        android:layout_width="36dp"
+	        android:layout_height="36dp"
+	        android:layout_margin="3dp"
+	        android:layout_gravity="top|right"
+	        android:background="@drawable/my_location"
+	        android:contentDescription="My Location" />
+    </FrameLayout>
 
 </LinearLayout>

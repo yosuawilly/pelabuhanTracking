@@ -1,10 +1,12 @@
 package com.tracking.kapal.activity;
 
+import android.content.Intent;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v4.view.WindowCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBar.Tab;
+import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 
@@ -22,6 +24,8 @@ public class MainMenuActivity extends BaseMyActionBarActivity implements ActionB
     private FragmentAdapter fragmentAdapter;
     // Tab titles
     private String[] tabs = { "Manual", "Automatic", "Tracking" };
+    
+    private int lastPositionPage = 0;
     
     @Override
     public void initDesign() {
@@ -109,6 +113,35 @@ public class MainMenuActivity extends BaseMyActionBarActivity implements ActionB
 		if(position==2) viewPager.setEnableSwipe(false);
 		else viewPager.setEnableSwipe(true);
 		actionBar.setSelectedNavigationItem(position);
+	}
+
+	@Override
+	public void startGpsSetting() {
+		startActivityForResult(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS), 0);
+	}
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
+		lastPositionPage = viewPager.getCurrentItem();
+		Log.i("onPause", "run");
+	}
+	
+	public void initViewPager(){
+		fragmentAdapter.removeAllFragment();
+		fragmentAdapter = new FragmentAdapter(getSupportFragmentManager(), this, this);
+		viewPager.removeAllViews();
+        viewPager.setAdapter(fragmentAdapter);
+        
+        viewPager.setCurrentItem(lastPositionPage);
+        //actionBar.selectTab(actionBar.getTabAt(lastPositionPage));
+	}
+	
+	@Override
+	protected void onResume() {
+		initViewPager();
+		super.onResume();
+		Log.i("onResume", "run");
 	}
 
 }
