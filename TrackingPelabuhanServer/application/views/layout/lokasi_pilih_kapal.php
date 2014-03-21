@@ -14,6 +14,7 @@
     var $namaKapal = "";
     
     function showBtnAction(){
+        comet.disconnect();
         //$namaKapal = $('#pilih-nama-kapal').val();
         $namaKapal = $('#pilih-nama-kapal :selected').text();
         
@@ -50,7 +51,7 @@
             //alert('ada'+lat+' '+lng);
             initialize(new google.maps.LatLng(lat, lng), true);
         }
-        
+        comet = null;
         comet = new Comet('rest/getKordinatKapal2/'+$namaKapal, function (response){
             try{
                 var lat = response.lat;
@@ -81,11 +82,12 @@
         
         if(useMarker){
         
-        marker = new google.maps.Marker({
-          position: map.getCenter(),
-          map: map,
-          title: 'Click to zoom'
-        });
+        marker = getNewMarker(location);
+//        marker = new google.maps.Marker({
+//          position: map.getCenter(),
+//          map: map,
+//          title: 'Click to zoom'
+//        });
 
         google.maps.event.addListener(map, 'center_changed', function() {
           // 3 seconds after the center of the map has changed, pan back to the
@@ -94,24 +96,36 @@
             map.panTo(marker.getPosition());
           }, 3000);
         });
-
+        
+        }
+    }
+    
+    function getNewMarker(location) {
+        var marker = new google.maps.Marker({
+          position: location,
+          map: map,
+          title: 'Click to zoom',
+          icon: '<?=base_url(). 'css/images/kapal.png'?>'
+        });
+        
         google.maps.event.addListener(marker, 'click', function() {
           map.setZoom(8);
           map.setCenter(marker.getPosition());
         });
         
-        }
+        return marker;
     }
     
     function directLocation(lat, lng){
 //                var latlon2 = new google.maps.LatLng(44.959944, 26.0186218);
         var latlon2 = new google.maps.LatLng(lat, lng);
         marker.setMap(null);
-        marker = new google.maps.Marker({  
-                    position: latlon2,  
-                    map: map,  
-//                    icon: 'http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=A|FF0000|000000' 
-                    });
+        marker = getNewMarker(latlon2);
+//        marker = new google.maps.Marker({  
+//                    position: latlon2,  
+//                    map: map,
+////                    icon: 'http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=A|FF0000|000000' 
+//                    });
         map.setCenter(latlon2);
         return false;
     }

@@ -2,6 +2,9 @@ var Comet = function (data_url, handle_response) {
     this.timestamp = 0;
     this.url = data_url;  
     this.noerror = true;
+    this.request = null;
+    this.abort = false;
+    
     if(typeof (handle_response) !== "function"){
         alert("Error, handle_response must be a function");
         return;
@@ -10,7 +13,7 @@ var Comet = function (data_url, handle_response) {
     this.connect = function() {
         var self = this;
 
-        $.ajax({
+        self.request = $.ajax({
           type : 'get',
           url : this.url,
           dataType : 'json', 
@@ -21,6 +24,7 @@ var Comet = function (data_url, handle_response) {
             self.noerror = true;          
           },
           complete : function(response) {
+            if(self.abort) return;
             // send a new ajax request when this request is finished
             if (!self.noerror) {
               // if a connection problem occurs, try to reconnect each 5 seconds
@@ -39,7 +43,13 @@ var Comet = function (data_url, handle_response) {
         });
     };
 
-    this.disconnect = function() {};
+    this.disconnect = function() {
+        var self = this;
+        if(self.request !== null) {
+            self.abort = true;
+            self.request.abort();
+        }
+    };
 
     this.handleResponse = typeof handle_response === 'function' ? handle_response : function(response) {
       $('#content').append('<div>' + response.msg + '</div>');

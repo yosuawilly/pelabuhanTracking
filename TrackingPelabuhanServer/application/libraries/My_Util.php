@@ -71,7 +71,7 @@ class My_Util {
     }
     
     public static function create_result($status, $fullMessage) {
-        return array('status'=>$status, 'fullMessage'=>$fullMessage);
+        return json_encode(array('status'=>$status, 'fullMessage'=>$fullMessage));
     }
     
 }
