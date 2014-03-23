@@ -39,6 +39,7 @@ class Home extends CI_Controller{
         $this->load->helper('file');
         
         $this->load->model('kapal_model', 'kapal');
+        $this->load->model('active_device_model', 'active_device');
         
         date_default_timezone_set('Asia/Jakarta');
         
@@ -143,21 +144,30 @@ class Home extends CI_Controller{
         switch ($proses) {
             case 'create':
                 //if ($this->form_validation->run() == false) {
-                if(trim($namakapal) == ''){
+                if(trim($kodekapal) == ''){
+                    $this->session->set_flashdata('error', 'Kode Kapal is required');
+                } else if(trim($namakapal) == ''){
                     $this->session->set_flashdata('error', 'Nama Kapal is required');
                 } else {
-                    $data = array('kode_kapal' => $kodekapal,
-                                  'nama_kapal' => $namakapal,
-                                  'ukuran' => $ukuran,
-                                  'mesin' => $mesin);
-                    $result = $this->kapal->save($data);
-                    if(!$result['error']) {
-                        redirect ('home/kapal', 'refresh');
-                        return;
+
+                    $is_exist = $this->kapal->isKapalExist($kodekapal, $namakapal);
+                    if($is_exist['exist']){
+                        $this->session->set_flashdata('error', $is_exist['error']);
+                    } else {
+                        $data = array('kode_kapal' => $kodekapal,
+                                      'nama_kapal' => $namakapal,
+                                      'ukuran' => $ukuran,
+                                      'mesin' => $mesin);
+                        $result = $this->kapal->save($data);
+                        if(!$result['error']) {
+                            redirect ('home/kapal', 'refresh');
+                            return;
+                        }
+                        else {
+                            $this->session->set_flashdata('error', $result['error']);
+                        }
                     }
-                    else {
-                        $this->session->set_flashdata('error', $result['error']);
-                    }
+                    
                 }
                 
                 $this->session->set_flashdata('kodekapal', $kodekapal);
@@ -168,19 +178,27 @@ class Home extends CI_Controller{
                     
                 break;
             case 'update':
-                if(trim($namakapal) == ''){
+                if(trim($kodekapal) == ''){
+                    $this->session->set_flashdata('error', 'Kode Kapal is required');
+                } else if(trim($namakapal) == ''){
                     $this->session->set_flashdata('error', 'Nama Kapal is required');
-                    
                 } else {
-                    $data = array('kode_kapal' => $kodekapal,
-                                  'nama_kapal' => $namakapal,
-                                  'ukuran' => $ukuran,
-                                  'mesin' => $mesin);
-                    $sukses = $this->kapal->update($id, $data);
-                    if($sukses) {
-                        redirect ('home/kapal', 'refresh');
-                        return;
+
+                    $is_exist = $this->kapal->isNamaKapalExist($kodekapal, $namakapal);
+                    if($is_exist['exist']){
+                        $this->session->set_flashdata('error', $is_exist['error']);
+                    } else {
+                        $data = array('kode_kapal' => $kodekapal,
+                                      'nama_kapal' => $namakapal,
+                                      'ukuran' => $ukuran,
+                                      'mesin' => $mesin);
+                        $sukses = $this->kapal->update($id, $data);
+                        if($sukses) {
+                            redirect ('home/kapal', 'refresh');
+                            return;
+                        }
                     }
+                    
                 }
                 
                 $this->session->set_flashdata('kodekapal', $kodekapal);
@@ -211,6 +229,41 @@ class Home extends CI_Controller{
         $this->user_data['map'] = $this->googlemaps->create_map();
         
         $this->load->view('lokasi_kapal', $this->user_data);
+    }
+
+    public function activeDevice() {
+        $this->user_data['title'] = My_Util::getTitle('Data Active Device', '-');
+        $this->user_data['activeDevice'] = true;
+
+        $devices = $this->active_device->getAllActiveDevice();
+
+        $this->table->set_template($this->tmpl);
+        $this->table->set_heading('Kode Kapal', 'Nama Kapal', 'Device ID', 'Action');
+
+        if($devices)
+        foreach ($devices as $device) {
+            $button_update_delete = '<div style="float:right;">';
+            $button_update_delete .= '<a href="'.base_url().'home/deactivateDevice/'.$device->kode_kapal.'/'.$device->device_id.'" class="btn btn-danger" onclick="return deleteData(this,\''.$device->kode_kapal.'\');">
+            <i class="icon icon-trash"></i> Deactivate</a></div>';
+            $this->table->add_row(
+                array('data'=>$device->kode_kapal, 'class'=>'center', 'style'=>'width:60px;'),
+                array('data'=>$device->nama_kapal, 'class'=>'center'),
+                array('data'=>$device->device_id, 'class'=>'center', 'style'=>'width:100px;'),
+                array('data'=>$button_update_delete, 'style'=>'width:164px;')
+            );
+        }
+
+        $this->user_data['table'] = $this->table->generate();
+
+        $this->load->view('active_device', $this->user_data);
+    }
+
+    public function deactivateDevice($kode_kapal=NULL, $device_id=NULL) {
+        if($kode_kapal==NULL || $device_id=NULL) redirect ('home/activeDevice', 'refresh');
+
+        $result = $this->active_device->delete($kode_kapal);
+        if($result) redirect ('home/activeDevice', 'refresh');
+        else show_error ('Delete Gagal');
     }
     
 }

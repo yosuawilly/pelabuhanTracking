@@ -1,4 +1,4 @@
-﻿create table "admin"(
+create table "admin"(
 id_admin serial not null primary key,
 username varchar(10),
 "password" varchar(6)
@@ -15,4 +15,9 @@ create table t_lokasi_kapal(
 kode_kapal varchar(10) references t_kapal on update cascade on delete cascade,
 lat double precision,
 lng double precision
+);
+
+create table t_active_device(
+kode_kapal varchar(10) references t_kapal on update cascade on delete cascade,
+device_id varchar(30) not null
 );

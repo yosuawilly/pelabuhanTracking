@@ -40,6 +40,7 @@
                                 <ul>
                                     <li><?php echo anchor('home/kapal', 'Data Kapal', array('title'=>'Data Kapal', 'class'=>(isset($kapal)) ? 'active' : "" )); ?></li>
                                     <li><?php echo anchor('home/lokasiKapal', 'Tampilkan Lokasi Kapal', array('title'=>'Tampilkan Lokasi Kapal', 'class'=>(isset($lokasi)) ? 'active' : "" )); ?></li>
+                                    <li><?php echo anchor('home/activeDevice', 'Active Device', array('title'=>'Active Device', 'class'=>(isset($activeDevice)) ? 'active' : "" )); ?></li>
 <!--                                    <li><?php //echo anchor('home/tugas', 'Data Tugas', array('title'=>'Data Tugas', 'class'=>(isset($tugas)) ? 'active' : "" )); ?></li>
                                     <li><?php //echo anchor('home/siswa', 'Data Siswa', array('title'=>'Data Siswa', 'class'=>(isset($siswa)) ? 'active' : "" )); ?></li>
                                     <li><?php //echo anchor('home/dataUploadTugas', 'Data Upload Tugas', array('title'=>'Data Upload Tugas', 'class'=>(isset($upload_tugas)) ? 'active' : "" )); ?></li>-->

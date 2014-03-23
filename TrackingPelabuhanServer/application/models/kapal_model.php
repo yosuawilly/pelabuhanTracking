@@ -41,6 +41,32 @@ class Kapal_model extends Super_model{
         return $this->lokasi->save($data);
     }
 
+    public function isKapalExist($kode_kapal, $nama_kapal) {
+        $result1 = $this->findBy($this->kode_kapal, $kode_kapal);
+        $result2 = $this->findBy($this->nama_kapal, $nama_kapal);
+
+        if($result1) {
+            return array('exist'=>TRUE, 'error'=>'Kode kapal ' .$kode_kapal. ' sudah ada di database');
+        } else if($result2) {
+            return array('exist'=>TRUE, 'error'=>'Nama kapal ' .$nama_kapal. ' sudah ada di database');
+        } else
+            return array('exist'=>FALSE, 'error'=>'');
+    }
+
+    public function isNamaKapalExist($kode_kapal, $nama_kapal) {
+        $kapal = $this->findBy($this->kode_kapal, $kode_kapal);
+        if($kapal->nama_kapal == $nama_kapal) {
+            return array('exist'=>FALSE, 'error'=>'');
+        }
+        
+        $result1 = $this->findBy($this->nama_kapal, $nama_kapal);
+
+        if($result1) {
+            return array('exist'=>TRUE, 'error'=>'Nama kapal ' .$nama_kapal. ' sudah ada di database');
+        } else
+            return array('exist'=>FALSE, 'error'=>'');
+    }
+
     public function get_primary_column() {
         return $this->kode_kapal;
     }

@@ -19,7 +19,7 @@
                     <label>Kode Kapal</label>
                 </td>
                 <td class="last">:
-                    <input type="text" name="kodekapal" value="<?php echo $kodekapal; ?>"/>
+                    <input type="text" name="kodekapal" value="<?php echo $kodekapal; ?>" <?=isset($update)?'readonly':''?> />
                 </td>
             </tr>
             <tr>
