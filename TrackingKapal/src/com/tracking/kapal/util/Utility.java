@@ -2,6 +2,8 @@ package com.tracking.kapal.util;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -9,6 +11,8 @@ import com.tracking.kapal.R;
 import com.tracking.kapal.listener.DialogListener;
 
 import android.app.Activity;
+import android.app.ActivityManager;
+import android.app.ActivityManager.RunningServiceInfo;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -164,5 +168,17 @@ public class Utility {
 		
 		return true;
 	}
+	
+	public static boolean isServiceRunning(Context context, String serviceClassName){
+		final ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        final List<RunningServiceInfo> services = activityManager.getRunningServices(Integer.MAX_VALUE);
+
+        for (RunningServiceInfo runningServiceInfo : services) {
+            if (runningServiceInfo.service.getClassName().equals(serviceClassName)){
+                return true;
+            }
+        }
+        return false;
+     }
 
 }

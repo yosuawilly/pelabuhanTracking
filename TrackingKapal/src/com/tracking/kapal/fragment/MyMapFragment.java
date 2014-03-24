@@ -1,21 +1,26 @@
 package com.tracking.kapal.fragment;
 
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMyLocationButtonClickListener;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.tracking.kapal.R;
 import com.tracking.kapal.listener.FragmentListener;
-import com.tracking.kapal.util.Utility;
-
+import com.tracking.kapal.util.Constant;
+import com.tracking.kapal.util.Gps;
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -24,7 +29,7 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 @SuppressLint("ValidFragment") 
-public class MyMapFragment extends Fragment implements OnClickListener, OnMyLocationButtonClickListener{
+public class MyMapFragment extends Fragment implements OnClickListener, OnMyLocationButtonClickListener, LocationListener{
 	
 	private Context context;
 	private ViewGroup viewGroup;
@@ -32,6 +37,10 @@ public class MyMapFragment extends Fragment implements OnClickListener, OnMyLoca
 	
 	private GoogleMap googleMap;
 	private ImageButton locationButton;
+	
+	LocationManager locationManager;
+	String locationProvider;
+	Marker marker;
 	
 	public MyMapFragment() {
 		// TODO Auto-generated constructor stub
@@ -65,6 +74,7 @@ public class MyMapFragment extends Fragment implements OnClickListener, OnMyLoca
 		try {
             // Loading map
             initilizeMap();
+            initializeLocationManager();
  
         } catch (Exception e) {
             e.printStackTrace();
@@ -89,15 +99,63 @@ public class MyMapFragment extends Fragment implements OnClickListener, OnMyLoca
 	@Override
 	public void onDestroyView() {
 		super.onDestroyView();
+		if(locationManager!=null) locationManager.removeUpdates(this);
+		
 		ViewGroup parentViewGroup = (ViewGroup) viewGroup.getParent();
 		if(parentViewGroup != null) parentViewGroup.removeView(viewGroup);
 		
-		Fragment fragment = getFragmentManager().findFragmentById(R.id.map);
-		if(fragment!=null){
-			getFragmentManager().beginTransaction().remove(fragment).commit();
-			Log.i("removeFragment", "run");
+//		Fragment fragment = getFragmentManager().findFragmentById(R.id.map);
+//		if(fragment!=null){
+//			getFragmentManager().beginTransaction().remove(fragment).commit();
+//			Log.i("removeFragment", "run");
+//		}
+	}
+	
+    private void initializeLocationManager() {
+		
+		//get the location manager
+		this.locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+		Location location = null;
+		
+		boolean gpsIsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        boolean networkIsEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+         
+        if(gpsIsEnabled)
+        {
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, Constant.INTERVAL_TIME_UPDATE_LOCATION, Constant.DISTANCE_CHANGE_FOR_UPDATE_LOCATION, this);
+            location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        }
+        else if(networkIsEnabled)
+        {
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, Constant.INTERVAL_TIME_UPDATE_LOCATION, Constant.DISTANCE_CHANGE_FOR_UPDATE_LOCATION, this);
+            location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        }
+        else
+        {
+        	//define the location manager criteria
+    		Criteria criteria = new Criteria();
+    		
+    		this.locationProvider = locationManager.getBestProvider(criteria, false);
+    		this.locationManager.requestLocationUpdates(this.locationProvider, Constant.INTERVAL_TIME_UPDATE_LOCATION, Constant.DISTANCE_CHANGE_FOR_UPDATE_LOCATION, this);
+    		
+    		location = locationManager.getLastKnownLocation(locationProvider);
+    		
+        	Toast.makeText(context, "No GPS enable", Toast.LENGTH_LONG).show();
+            //Show an error dialog that GPS is disabled...
+        }
+		
+		
+		//initialize the location
+		if(location != null) {
+		    onLocationChanged(location);
 		}
 	}
+    
+    protected MarkerOptions initMarker(LatLng position) {
+    	return new MarkerOptions().position(position)
+    			.title("Test").icon(BitmapDescriptorFactory.fromResource(R.drawable.ship2))
+    			.snippet("The last location");
+    }
 
 	@Override
 	public boolean onMyLocationButtonClick() {
@@ -109,15 +167,56 @@ public class MyMapFragment extends Fragment implements OnClickListener, OnMyLoca
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.myMapLocationButton:
-			if(Utility.checkGpsEnable(context)){
-				Toast.makeText(context, "GPS Enable", Toast.LENGTH_LONG).show();
-			} else {
-				Toast.makeText(context, "GPS not Enable", Toast.LENGTH_LONG).show();
+			Location location = new Gps(locationManager).getLocation();
+			if(location!=null) {
+				onLocationChanged(location);
 			}
+//			if(Utility.checkGpsEnable(context)){
+//				Toast.makeText(context, "GPS Enable", Toast.LENGTH_LONG).show();
+//			} else {
+//				Toast.makeText(context, "GPS not Enable", Toast.LENGTH_LONG).show();
+//			}
 			break;
 		default:
 			break;
 		}
+	}
+
+	@Override
+	public void onLocationChanged(Location location) {
+		
+		//when the location changes, update the map by zooming to the location
+		CameraUpdate center = CameraUpdateFactory.newLatLng(new LatLng(location.getLatitude(),location.getLongitude()));
+		this.googleMap.moveCamera(center);
+		//this.googleMap.animateCamera(center);
+		
+		CameraUpdate zoom=CameraUpdateFactory.zoomTo(15);
+		this.googleMap.animateCamera(zoom);
+		
+		if(marker==null) {
+			marker = googleMap.addMarker(initMarker(new LatLng(location.getLatitude(), location.getLongitude())));
+		} else {
+			marker.setPosition(new LatLng(location.getLatitude(),location.getLongitude()));
+		}
+		
+	}
+
+	@Override
+	public void onProviderDisabled(String provider) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onProviderEnabled(String provider) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onStatusChanged(String provider, int status, Bundle extras) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

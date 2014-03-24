@@ -18,7 +18,6 @@ import com.tracking.kapal.listener.FragmentListener;
 
 public class MainMenuActivity extends BaseMyActionBarActivity implements ActionBar.TabListener, FragmentListener, OnPageChangeListener{
 	
-//	private TabsPagerAdapter mAdapter;
     private ActionBar actionBar;
     private CustomViewPager viewPager;
     private FragmentAdapter fragmentAdapter;
@@ -41,11 +40,14 @@ public class MainMenuActivity extends BaseMyActionBarActivity implements ActionB
     	
     	/*init ViewPager*/
     	viewPager = (CustomViewPager) findViewById(R.id.viewPager);
+    	viewPager.removeAllViews();
         fragmentAdapter = new FragmentAdapter(getSupportFragmentManager(), this, this);
-        //viewPager.setEnableSwipe(true);
+        fragmentAdapter.removeAllFragment();
+        viewPager.setEnableSwipe(false);
         viewPager.setOffscreenPageLimit(3);
         viewPager.setAdapter(fragmentAdapter);
         viewPager.setOnPageChangeListener(this);
+        viewPager.requestTransparentRegion(viewPager);
     	
     	// Adding Tabs
         for (String tab_name : tabs) {
@@ -53,6 +55,8 @@ public class MainMenuActivity extends BaseMyActionBarActivity implements ActionB
                     .setTabListener(this));
         }
         
+        //viewPager.setCurrentItem(lastPositionPage);
+        Log.i("initDesign", "run");
     }
     
     protected void initLayoutHeader() {
@@ -85,8 +89,8 @@ public class MainMenuActivity extends BaseMyActionBarActivity implements ActionB
 
 	@Override
 	public void onTabSelected(Tab tab, FragmentTransaction ft) {
-		if(tab.getPosition()==2) viewPager.setEnableSwipe(false);
-		else viewPager.setEnableSwipe(true);
+//		if(tab.getPosition()==2) viewPager.setEnableSwipe(false);
+//		else viewPager.setEnableSwipe(true);
 		viewPager.setCurrentItem(tab.getPosition());
 	}
 
@@ -110,8 +114,8 @@ public class MainMenuActivity extends BaseMyActionBarActivity implements ActionB
 
 	@Override
 	public void onPageSelected(int position) {
-		if(position==2) viewPager.setEnableSwipe(false);
-		else viewPager.setEnableSwipe(true);
+//		if(position==2) viewPager.setEnableSwipe(false);
+//		else viewPager.setEnableSwipe(true);
 		actionBar.setSelectedNavigationItem(position);
 	}
 
@@ -128,13 +132,12 @@ public class MainMenuActivity extends BaseMyActionBarActivity implements ActionB
 	}
 	
 	public void initViewPager(){
-		fragmentAdapter.removeAllFragment();
-		fragmentAdapter = new FragmentAdapter(getSupportFragmentManager(), this, this);
-		viewPager.removeAllViews();
-        viewPager.setAdapter(fragmentAdapter);
-        
-        viewPager.setCurrentItem(lastPositionPage);
-        //actionBar.selectTab(actionBar.getTabAt(lastPositionPage));
+//		fragmentAdapter.removeAllFragment();
+//		fragmentAdapter = new FragmentAdapter(getSupportFragmentManager(), this, this);
+//		viewPager.removeAllViews();
+//        viewPager.setAdapter(fragmentAdapter);
+//        
+//        viewPager.setCurrentItem(lastPositionPage);
 	}
 	
 	@Override

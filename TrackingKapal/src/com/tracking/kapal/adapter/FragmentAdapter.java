@@ -10,11 +10,12 @@ import com.tracking.kapal.listener.FragmentListener;
 import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 
-public class FragmentAdapter extends FragmentStatePagerAdapter{
+public class FragmentAdapter extends FragmentPagerAdapter{
 	
 	private Context context;
 	private FragmentListener fragmentListener;
@@ -63,6 +64,13 @@ public class FragmentAdapter extends FragmentStatePagerAdapter{
 	
 	@Override
 	public int getItemPosition(Object object) {
+		if(object instanceof ManualFragment) {
+			return 0;
+		} else if(object instanceof AutomaticFragment) {
+			return 1;
+		}else if(object instanceof MyMapFragment) {
+			return 2;
+		} else 
 		return POSITION_NONE;
 	}
 	
