@@ -18,6 +18,7 @@ public class CallWebServiceTask extends AsyncTask<Object, String, String>{
 	private ProgressDialog dialog;
 	private String message = "Retrieving data ...";
 	private Integer idCaller = null;
+	private boolean withDialog = true;
 	
 	public CallWebServiceTask() {
 		// TODO Auto-generated constructor stub
@@ -30,6 +31,13 @@ public class CallWebServiceTask extends AsyncTask<Object, String, String>{
 	}
 	
 	public CallWebServiceTask(Context applicationContext,
+			AsyncTaskCompleteListener<Object> callback, boolean withDialog) {
+		this.applicationContext = applicationContext;
+		this.callback = callback;
+		this.withDialog = withDialog;
+	}
+	
+	public CallWebServiceTask(Context applicationContext,
 			AsyncTaskCompleteListener<Object> callback, String message) {
 		this.applicationContext = applicationContext;
 		this.callback = callback;
@@ -38,6 +46,7 @@ public class CallWebServiceTask extends AsyncTask<Object, String, String>{
 
 	@Override
 	protected void onPreExecute() {
+		if(withDialog)
 		dialog = ProgressDialog.show(applicationContext,    
                 "Please wait...", message, true, true, 
                 new DialogInterface.OnCancelListener(){
@@ -86,6 +95,7 @@ public class CallWebServiceTask extends AsyncTask<Object, String, String>{
 	@Override
 	protected void onPostExecute(String result) {
 		// Log.i("CALL BACK ", "POST EXECUTE");
+		if (withDialog)
 		if (dialog.isShowing()) {
 			try {
 				dialog.dismiss();

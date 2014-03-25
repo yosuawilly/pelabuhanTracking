@@ -9,8 +9,10 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.location.LocationManager;
 import android.os.Binder;
 import android.os.IBinder;
@@ -20,6 +22,8 @@ import android.widget.Toast;
 public class GetLocationService extends Service {
 	
 	public static final String GetLocationService = "com.tracking.kapal.service.GetLocationService";
+	
+	public static final String ACTION_SHUTDOWN_SERVICE = "ACTION_SHUTDOWN_SERVICE";
 	
 	private NotificationManager mNM;
 	private final IBinder mBinder = new LocalBinder();
@@ -31,6 +35,8 @@ public class GetLocationService extends Service {
 		super.onCreate();
 		mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
 		showNotification();
+		
+		registerReceiver(shutDownServiceReceiver, new IntentFilter(ACTION_SHUTDOWN_SERVICE));
 	}
 	
 	@Override
@@ -52,10 +58,12 @@ public class GetLocationService extends Service {
 	
 	@Override
 	public void onDestroy() {
-		super.onDestroy();
 		locationManager.removeUpdates(myLocationListener);
 		mNM.cancel(Constant.NOTIFICATION_LOCATION);
+		unregisterReceiver(shutDownServiceReceiver);
 		Toast.makeText(this, "LocationService stoped", Toast.LENGTH_LONG).show();
+		
+		super.onDestroy();
 	}
 
 	@Override
@@ -89,5 +97,13 @@ public class GetLocationService extends Service {
             return GetLocationService.this;
         }
     }
+	
+	BroadcastReceiver shutDownServiceReceiver = new BroadcastReceiver() {
+		
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			GetLocationService.this.stopSelf();
+		}
+	};
 
 }

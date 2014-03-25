@@ -72,7 +72,8 @@ public class AutomaticFragment extends Fragment implements OnClickListener{
 				context.startService(new Intent(GetLocationService.GetLocationService));
 				((Button)v).setText("Matikan Auto Tracking");
 			} else {
-				context.stopService(new Intent(GetLocationService.GetLocationService));
+				context.sendBroadcast(new Intent(GetLocationService.ACTION_SHUTDOWN_SERVICE));
+				//context.stopService(new Intent(GetLocationService.GetLocationService));
 				((Button)v).setText("Aktifkan Auto Tracking");
 			}
 		}

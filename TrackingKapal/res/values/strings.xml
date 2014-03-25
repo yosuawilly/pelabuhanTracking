@@ -6,5 +6,8 @@
     <string name="hello_world">Hello world!</string>
     <string name="message.problemKomunikasiServer">Problem komunikasi dengan server</string>
     <string name="error.emptyNamaKapal">Anda belum memasukkan nama kapal</string>
+    <string name="header.errorStartup">Gangguan Koneksi</string>
+    <string name="error.startError">Maaf, Ada gangguan koneksi jaringan. Mohon pastikan koneksi internet sudah berjalan lancar. </string>
+    <string name="button.retry">Coba Lagi</string>
 
 </resources>

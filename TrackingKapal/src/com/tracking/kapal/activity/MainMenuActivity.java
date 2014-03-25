@@ -9,12 +9,16 @@ import android.support.v7.app.ActionBar.Tab;
 import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import com.tracking.kapal.R;
 import com.tracking.kapal.activity.base.BaseMyActionBarActivity;
 import com.tracking.kapal.adapter.FragmentAdapter;
 import com.tracking.kapal.customcomponent.CustomViewPager;
+import com.tracking.kapal.database.PreferenceHelper;
 import com.tracking.kapal.listener.FragmentListener;
+import com.tracking.kapal.model.Kapal;
+import com.tracking.kapal.util.Constant;
 
 public class MainMenuActivity extends BaseMyActionBarActivity implements ActionBar.TabListener, FragmentListener, OnPageChangeListener{
 	
@@ -61,6 +65,13 @@ public class MainMenuActivity extends BaseMyActionBarActivity implements ActionB
     
     protected void initLayoutHeader() {
     	View v = getLayoutInflater().inflate(R.layout.header_layout, null);
+    	
+    	Kapal kapal = new PreferenceHelper(this, Constant.SETTING_KAPAL).getObject(Constant.KAPAL, Kapal.class);
+    	if(kapal!=null) {
+    		((TextView) v.findViewById(R.id.kodeKapalText)).setText(kapal.getKode_kapal());
+    		((TextView) v.findViewById(R.id.namaKapalText)).setText(kapal.getNama_kapal());
+    	}
+    	
     	((FrameLayout)findViewById(android.support.v7.appcompat.R.id.activity_header)).addView(v);
     }
 
@@ -145,6 +156,13 @@ public class MainMenuActivity extends BaseMyActionBarActivity implements ActionB
 		initViewPager();
 		super.onResume();
 		Log.i("onResume", "run");
+	}
+	
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		System.gc();
+		Log.i("onDestroy", "run");
 	}
 
 }

@@ -2,6 +2,7 @@ package com.tracking.kapal.activity.base;
 
 import com.tracking.kapal.R;
 import com.tracking.kapal.activity.LoginActivity;
+import com.tracking.kapal.util.ForceCloseHandler;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ public class BaseActionBarActivity extends ActionBarActivity{
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Thread.setDefaultUncaughtExceptionHandler(new ForceCloseHandler(this, this));
 		overridePendingTransition( R.anim.slide_in_right, R.anim.slide_out_left );
 	}
 	

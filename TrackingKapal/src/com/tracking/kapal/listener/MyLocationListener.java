@@ -1,5 +1,7 @@
 package com.tracking.kapal.listener;
 
+import com.tracking.kapal.restfull.SenderLocation;
+
 import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
@@ -16,6 +18,7 @@ public class MyLocationListener implements LocationListener{
 
 	@Override
 	public void onLocationChanged(Location location) {
+		SenderLocation.sendLocationToServer(context, location);
 		Toast.makeText(context, String.valueOf(location.getLatitude() + " " + location.getLongitude()), Toast.LENGTH_LONG).show();
 	}
 

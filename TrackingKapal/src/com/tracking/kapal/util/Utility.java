@@ -14,15 +14,32 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
 import android.app.AlertDialog;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.graphics.drawable.Drawable;
 import android.location.LocationManager;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 
 public class Utility {
+	
+	public static final String getImei(Context context){
+		TelephonyManager manager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+	    String imei = manager.getDeviceId();
+		return imei;
+	}
+	
+	public static final String getTokenId(Context context){
+	    String tokenId = getImei(context) + Constant.ANDROID_ID;
+	    
+	    if(DeviceUtil.isMEID(getImei(context))){
+	    	tokenId = DeviceUtil.getDeviceIdCdma(getImei(context)) + Constant.ANDROID_ID;;
+		}
+		return tokenId;
+	}
 	
 	public static void showMessage(Context context, String pesan){
 		new AlertDialog.Builder(context).setMessage(pesan)
@@ -87,9 +104,11 @@ public class Utility {
                 } 
 				else if(jsonObject.has("status"))
 				{
-					String status = jsonObject.getString("status");
+					//String status = jsonObject.getString("status");
+					boolean status = jsonObject.getBoolean("status");
 					message = (jsonObject.has("fullMessage"))?jsonObject.getString("fullMessage"):ResourceUtil.getBundle().getString(errorCode);
-					if("0".equals(status))
+					//if("0".equals(status))
+					if(!status)
 					{
 						showErrorMessage(activity, message);
 						return false;
@@ -180,5 +199,10 @@ public class Utility {
         }
         return false;
      }
+	
+	 public static void removeNotification(Context context, int notificationID) {
+		 NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+		 manager.cancel(notificationID);
+	 }
 
 }
