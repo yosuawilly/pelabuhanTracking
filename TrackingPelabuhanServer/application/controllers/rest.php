@@ -85,7 +85,7 @@ class Rest extends CI_Controller{
                 echo My_Util::create_result(false, 'Activation Failed. detail error : '.$active['error']);
             }
         } else {
-            echo My_Util::create_result(false, 'Kapal dengan nama ' .$nama_kapal. 'tidak ditemukan');
+            echo My_Util::create_result(false, 'Kapal dengan nama ' .$nama_kapal. ' tidak ditemukan');
         }
     }
 

@@ -38,7 +38,7 @@ var Comet = function (data_url, handle_response) {
             self.noerror = false; 
           },
           error: function(xhr, status, errorMsg){
-              alert(errorMsg);
+              //alert(errorMsg);
           }
         });
     };
