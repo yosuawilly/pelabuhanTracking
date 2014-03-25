@@ -102,7 +102,8 @@ public class GetLocationService extends Service {
 		
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			GetLocationService.this.stopSelf();
+			//GetLocationService.this.stopSelf();
+			stopService(new Intent(GetLocationService.this, GetLocationService.class));
 		}
 	};
 
