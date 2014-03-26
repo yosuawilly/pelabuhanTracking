@@ -27,7 +27,7 @@ public class GetLocationService extends Service {
 	
 	private NotificationManager mNM;
 	private final IBinder mBinder = new LocalBinder();
-	private MyLocationListener myLocationListener;
+	private MyLocationListener myLocationListener = new MyLocationListener(this);
 	private LocationManager locationManager;
 	
 	@Override
@@ -35,6 +35,10 @@ public class GetLocationService extends Service {
 		super.onCreate();
 		mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
 		showNotification();
+		
+		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+		locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, Constant.INTERVAL_TIME_UPDATE_LOCATION, Constant.DISTANCE_CHANGE_FOR_UPDATE_LOCATION, myLocationListener);
+	    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, Constant.INTERVAL_TIME_UPDATE_LOCATION, Constant.DISTANCE_CHANGE_FOR_UPDATE_LOCATION, myLocationListener);
 		
 		registerReceiver(shutDownServiceReceiver, new IntentFilter(ACTION_SHUTDOWN_SERVICE));
 	}
@@ -46,10 +50,10 @@ public class GetLocationService extends Service {
 	
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		myLocationListener = new MyLocationListener(this);
-		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-		locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, Constant.INTERVAL_TIME_UPDATE_LOCATION, Constant.DISTANCE_CHANGE_FOR_UPDATE_LOCATION, myLocationListener);
-	    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, Constant.INTERVAL_TIME_UPDATE_LOCATION, Constant.DISTANCE_CHANGE_FOR_UPDATE_LOCATION, myLocationListener);
+//		myLocationListener = new MyLocationListener(this);
+//		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+//		locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, Constant.INTERVAL_TIME_UPDATE_LOCATION, Constant.DISTANCE_CHANGE_FOR_UPDATE_LOCATION, myLocationListener);
+//	    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, Constant.INTERVAL_TIME_UPDATE_LOCATION, Constant.DISTANCE_CHANGE_FOR_UPDATE_LOCATION, myLocationListener);
 	    
 	    Log.i("onStart", "run");
 	    
@@ -103,6 +107,7 @@ public class GetLocationService extends Service {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			//GetLocationService.this.stopSelf();
+			startService(new Intent(GetLocationService.this, GetLocationService.class));
 			stopService(new Intent(GetLocationService.this, GetLocationService.class));
 		}
 	};
