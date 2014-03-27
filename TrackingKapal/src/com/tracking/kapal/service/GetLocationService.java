@@ -57,7 +57,7 @@ public class GetLocationService extends Service {
 	    
 	    Log.i("onStart", "run");
 	    
-		return START_STICKY;
+		return START_REDELIVER_INTENT;
 	}
 	
 	@Override
@@ -106,9 +106,9 @@ public class GetLocationService extends Service {
 		
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			//GetLocationService.this.stopSelf();
-			startService(new Intent(GetLocationService.this, GetLocationService.class));
-			stopService(new Intent(GetLocationService.this, GetLocationService.class));
+			GetLocationService.this.stopSelf();
+			//startService(new Intent(GetLocationService.this, GetLocationService.class));
+			//stopService(new Intent(GetLocationService.this, GetLocationService.class));
 		}
 	};
 
