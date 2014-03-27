@@ -72,7 +72,8 @@ class Rest extends CI_Controller{
 
         $result = $this->kapal->findBy('nama_kapal', $nama_kapal);
         if($result) {
-            $is_active = $this->active_device->findBy('device_id', $device_id);
+            //$is_active = $this->active_device->findBy('device_id', $device_id);
+            $is_active = $this->active_device->findBy('kode_kapal', $result->kode_kapal);
             if($is_active) {
                 echo My_Util::create_result(false, 'Kapal sudah active di device lain');
                 exit();

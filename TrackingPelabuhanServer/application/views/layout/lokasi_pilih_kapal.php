@@ -119,9 +119,21 @@
     function directLocation(lat, lng){
 //                var latlon2 = new google.maps.LatLng(44.959944, 26.0186218);
         var latlon2 = new google.maps.LatLng(lat, lng);
-        if(marker!=null)
-        marker.setMap(null);
-        marker = getNewMarker(latlon2);
+        if(marker!=null) {
+            marker.setMap(null);
+            marker = getNewMarker(latlon2);
+        }
+        else {
+            marker = getNewMarker(latlon2);
+            google.maps.event.addListener(map, 'center_changed', function() {
+                // 3 seconds after the center of the map has changed, pan back to the
+                // marker.
+                window.setTimeout(function() {
+                  map.panTo(marker.getPosition());
+                }, 3000);
+            });
+        }
+        
 //        marker = new google.maps.Marker({  
 //                    position: latlon2,  
 //                    map: map,
