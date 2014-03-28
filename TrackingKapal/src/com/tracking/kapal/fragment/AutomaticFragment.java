@@ -1,5 +1,6 @@
 package com.tracking.kapal.fragment;
 
+import com.actionbarsherlock.app.SherlockFragment;
 import com.tracking.kapal.R;
 import com.tracking.kapal.listener.FragmentListener;
 import com.tracking.kapal.service.GetLocationService;
@@ -17,7 +18,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 @SuppressLint("ValidFragment")
-public class AutomaticFragment extends Fragment implements OnClickListener{
+public class AutomaticFragment extends SherlockFragment implements OnClickListener{
 	
 	private Context context;
 	private ViewGroup viewGroup;

@@ -13,13 +13,14 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.actionbarsherlock.app.SherlockFragment;
 import com.tracking.kapal.R;
 import com.tracking.kapal.listener.FragmentListener;
 import com.tracking.kapal.restfull.SenderLocation;
 import com.tracking.kapal.util.Gps;
 
 @SuppressLint("ValidFragment")
-public class ManualFragment extends Fragment implements OnClickListener{
+public class ManualFragment extends SherlockFragment implements OnClickListener{
 	
 	private Context context;
 	private ViewGroup viewGroup;

@@ -3,14 +3,13 @@ package com.tracking.kapal.activity;
 import android.content.Intent;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
-import android.support.v4.view.WindowCompat;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBar.Tab;
 import android.util.Log;
-import android.view.View;
-import android.widget.FrameLayout;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.ActionBar.Tab;
 import com.tracking.kapal.R;
 import com.tracking.kapal.activity.base.BaseMyActionBarActivity;
 import com.tracking.kapal.adapter.FragmentAdapter;
@@ -28,19 +27,9 @@ public class MainMenuActivity extends BaseMyActionBarActivity implements ActionB
     // Tab titles
     private String[] tabs = { "Manual", "Automatic", "Tracking" };
     
-    private int lastPositionPage = 0;
-    
     @Override
     public void initDesign() {
     	super.initDesign();
-    	initLayoutHeader();
-    	
-    	actionBar = getSupportActionBar();
-    	actionBar.setDisplayShowTitleEnabled(false);
-    	actionBar.setDisplayShowHomeEnabled(false);
-    	actionBar.setHomeButtonEnabled(false);
-    	actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-    	supportRequestWindowFeature(WindowCompat.FEATURE_ACTION_BAR_OVERLAY);
     	
     	/*init ViewPager*/
     	viewPager = (CustomViewPager) findViewById(R.id.viewPager);
@@ -52,6 +41,14 @@ public class MainMenuActivity extends BaseMyActionBarActivity implements ActionB
         viewPager.setAdapter(fragmentAdapter);
         viewPager.setOnPageChangeListener(this);
         viewPager.requestTransparentRegion(viewPager);
+        
+        /*init ActionBar*/
+        actionBar = getSupportActionBar();
+    	actionBar.setDisplayShowTitleEnabled(false);
+    	actionBar.setDisplayShowHomeEnabled(false);
+    	actionBar.setHomeButtonEnabled(false);
+    	actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+    	//supportRequestWindowFeature(WindowCompat.FEATURE_ACTION_BAR_OVERLAY);
     	
     	// Adding Tabs
         for (String tab_name : tabs) {
@@ -59,12 +56,14 @@ public class MainMenuActivity extends BaseMyActionBarActivity implements ActionB
                     .setTabListener(this));
         }
         
+        initLayoutHeader();
+        
         //viewPager.setCurrentItem(lastPositionPage);
         Log.i("initDesign", "run");
     }
     
     protected void initLayoutHeader() {
-    	View v = getLayoutInflater().inflate(R.layout.header_layout, null);
+    	LinearLayout v = (LinearLayout) getLayoutInflater().inflate(R.layout.header_layout, null);
     	
     	Kapal kapal = new PreferenceHelper(this, Constant.SETTING_KAPAL).getObject(Constant.KAPAL, Kapal.class);
     	if(kapal!=null) {
@@ -72,7 +71,11 @@ public class MainMenuActivity extends BaseMyActionBarActivity implements ActionB
     		((TextView) v.findViewById(R.id.namaKapalText)).setText(kapal.getNama_kapal());
     	}
     	
-    	((FrameLayout)findViewById(android.support.v7.appcompat.R.id.activity_header)).addView(v);
+    	ViewGroup decor = (ViewGroup) getWindow().getDecorView();
+		ViewGroup child = (ViewGroup) decor.getChildAt(0);
+		child.addView(v, 0);
+    	
+    	//((FrameLayout)findViewById(android.support.v7.appcompat.R.id.activity_header)).addView(v);
     }
 
 	@Override
@@ -90,25 +93,6 @@ public class MainMenuActivity extends BaseMyActionBarActivity implements ActionB
 	public int getIdViewToInflate() {
 		// TODO Auto-generated method stub
 		return 0;
-	}
-
-	@Override
-	public void onTabReselected(Tab tab, FragmentTransaction ft) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onTabSelected(Tab tab, FragmentTransaction ft) {
-//		if(tab.getPosition()==2) viewPager.setEnableSwipe(false);
-//		else viewPager.setEnableSwipe(true);
-		viewPager.setCurrentItem(tab.getPosition());
-	}
-
-	@Override
-	public void onTabUnselected(Tab tab, FragmentTransaction ft) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -138,7 +122,7 @@ public class MainMenuActivity extends BaseMyActionBarActivity implements ActionB
 	@Override
 	protected void onPause() {
 		super.onPause();
-		lastPositionPage = viewPager.getCurrentItem();
+		//lastPositionPage = viewPager.getCurrentItem();
 		Log.i("onPause", "run");
 	}
 	
@@ -163,6 +147,25 @@ public class MainMenuActivity extends BaseMyActionBarActivity implements ActionB
 		super.onDestroy();
 		System.gc();
 		Log.i("onDestroy", "run");
+	}
+
+	@Override
+	public void onTabSelected(Tab tab, FragmentTransaction ft) {
+//		if(tab.getPosition()==2) viewPager.setEnableSwipe(false);
+//		else viewPager.setEnableSwipe(true);
+		viewPager.setCurrentItem(tab.getPosition());
+	}
+
+	@Override
+	public void onTabUnselected(Tab tab, FragmentTransaction ft) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onTabReselected(Tab tab, FragmentTransaction ft) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

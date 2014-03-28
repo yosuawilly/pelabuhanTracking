@@ -1,5 +1,6 @@
 package com.tracking.kapal.fragment;
 
+import com.actionbarsherlock.app.SherlockFragment;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -29,7 +30,7 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 @SuppressLint("ValidFragment") 
-public class MyMapFragment extends Fragment implements OnClickListener, OnMyLocationButtonClickListener, LocationListener{
+public class MyMapFragment extends SherlockFragment implements OnClickListener, OnMyLocationButtonClickListener, LocationListener{
 	
 	private Context context;
 	private ViewGroup viewGroup;
