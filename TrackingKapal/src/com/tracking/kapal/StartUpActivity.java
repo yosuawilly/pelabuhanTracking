@@ -87,8 +87,25 @@ public class StartUpActivity extends Activity implements AsyncTaskCompleteListen
 		Log.i("result", result);
 		
 		if(idCaller==Constant.DELETE_ACTIVE_DEVICE) {
-			startActivity(new Intent(StartUpActivity.this, LoginActivity.class));
-			finish();
+			try {
+				JSONObject jsonObject = new JSONObject(result);
+				if(jsonObject.has("status")) {
+					if(jsonObject.getBoolean("status")) {
+						startActivity(new Intent(StartUpActivity.this, LoginActivity.class));
+						finish();
+						return;
+					}
+				}
+				// error server
+				startActivity(new Intent(this, ConnectionErrorActivity.class));
+				finish();
+			} catch (JSONException e) {
+				e.printStackTrace();
+				// error server
+				startActivity(new Intent(this, ConnectionErrorActivity.class));
+				finish();
+			}
+			
 		} else if(idCaller==Constant.CHECK_ACTIVE_DEVICE) {
 			try {
 				JSONObject jsonObject = new JSONObject(result);
