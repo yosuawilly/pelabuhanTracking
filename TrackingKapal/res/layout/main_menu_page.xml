@@ -4,6 +4,104 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
     
+    <FrameLayout 
+        android:layout_width="fill_parent"
+        android:layout_height="30dp"
+        android:background="@drawable/bg_header_blue">
+        <TextView 
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tracking Kapal"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:layout_gravity="center"/>
+    </FrameLayout>
+    
+    <LinearLayout 
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@drawable/panelmenumiddle"
+        android:gravity="center_vertical"
+        android:padding="8dp">
+        
+        <ImageView 
+            android:layout_width="50px"
+            android:layout_height="50px"
+            android:background="@drawable/ship"/>
+        
+        <LinearLayout 
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_marginLeft="5dp">
+            <LinearLayout 
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView 
+                    style="@style/default_textview"
+	                android:text="Kode Kapal : "/>
+                <TextView 
+                    android:id="@+id/kodeKapalText"
+                    style="@style/default_textview"
+	                android:text="K001" />
+            </LinearLayout>
+            
+            <LinearLayout 
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView 
+                    style="@style/default_textview"
+	                android:text="Nama Kapal : " />
+                <TextView 
+                    android:id="@+id/namaKapalText"
+                    style="@style/default_textview"
+	                android:text="Titanic" />
+            </LinearLayout>
+        </LinearLayout>
+        
+    </LinearLayout>
+    
+    <TabHost 
+		android:id="@+id/tabhost"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content" >
+	
+	    <!--<TabHost xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@android:id/tabhost"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent" >-->
+	 
+		<LinearLayout
+			android:id="@+id/tabcontainer"
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent"
+			android:orientation="vertical" >
+			 
+			<TabWidget
+				android:id="@android:id/tabs"
+				android:layout_width="fill_parent"
+				android:layout_height="48dp"
+				android:background="@android:color/transparent"
+				android:gravity="center_horizontal" >
+			</TabWidget>
+			 
+			<FrameLayout
+				android:id="@android:id/tabcontent"
+				android:layout_width="fill_parent"
+				android:layout_height="fill_parent"
+				android:fadeScrollbars="false"
+				android:fadingEdge="none"
+				android:scrollbars="@null" >
+			</FrameLayout>
+			
+		</LinearLayout>
+	 
+	</TabHost>
+    
     <FrameLayout
 	    android:layout_width="match_parent"
 	    android:layout_height="match_parent" >
