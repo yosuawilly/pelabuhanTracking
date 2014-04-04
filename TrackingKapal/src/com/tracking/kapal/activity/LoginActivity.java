@@ -1,7 +1,5 @@
 package com.tracking.kapal.activity;
 
-import java.lang.reflect.Type;
-
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.tracking.kapal.R;
@@ -51,6 +49,13 @@ public class LoginActivity extends Activity implements OnClickListener, AsyncTas
 				String deviceId = Utility.getTokenId(this);
 				CallWebServiceTask task = new CallWebServiceTask(this, this);
 				task.execute(Constant.URL_ACTIVATION_DEVICE + namaKapal+"/"+deviceId, Constant.REST_GET);
+//				String url = null;
+//				try {
+//					url = Constant.URL_ACTIVATION_DEVICE + URLEncoder.encode(namaKapal , "UTF-8").replace("+", "%20") +"/"+deviceId;
+//				} catch (UnsupportedEncodingException e) {
+//					e.printStackTrace();
+//				}
+//				task.execute(url, Constant.REST_GET);
 				
 				//startActivity(new Intent(this, MainMenuActivity.class));
 				//finish();

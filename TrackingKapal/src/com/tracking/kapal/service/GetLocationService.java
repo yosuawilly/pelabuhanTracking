@@ -41,6 +41,8 @@ public class GetLocationService extends Service {
 	    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, Constant.INTERVAL_TIME_UPDATE_LOCATION, Constant.DISTANCE_CHANGE_FOR_UPDATE_LOCATION, myLocationListener);
 		
 		registerReceiver(shutDownServiceReceiver, new IntentFilter(ACTION_SHUTDOWN_SERVICE));
+		
+		Toast.makeText(this, "LocationService Started", Toast.LENGTH_LONG).show();
 	}
 	
 	@Override
