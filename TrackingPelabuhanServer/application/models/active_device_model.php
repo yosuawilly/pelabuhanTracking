@@ -27,6 +27,13 @@ from t_active_device ad, t_kapal k where ad.kode_kapal=k.kode_kapal';
         $query = $this->db->query($strSQL);
         return $query->result();
     }
+    
+    public function findByKodeKapalDeviceId($kode_kapal, $device_id) {
+        $strSQL = 'select * from t_active_device where kode_kapal = ? and device_id = ? limit 1';
+        
+        $query = $this->db->query($strSQL, array($kode_kapal, $device_id));
+        return ($query->num_rows() > 0) ? $query->row() : false;
+    }
 
     public function get_primary_column() {
         return $this->kode_kapal;

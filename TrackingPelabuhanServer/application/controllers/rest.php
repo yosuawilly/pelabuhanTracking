@@ -69,6 +69,7 @@ class Rest extends CI_Controller{
             echo My_Util::create_result(false, 'Parameter tidak lengkap');
             exit();
         }
+        //$nama_kapal = str_replace('%20', ' ', $nama_kapal);
 
         $result = $this->kapal->findBy('nama_kapal', $nama_kapal);
         if($result) {
@@ -96,7 +97,8 @@ class Rest extends CI_Controller{
             exit();
         }
 
-        $result = $this->active_device->findBy('kode_kapal', $kode_kapal);
+        //$result = $this->active_device->findBy('kode_kapal', $kode_kapal);
+        $result = $this->active_device->findByKodeKapalDeviceId($kode_kapal, $device_id);
         if($result) {
             echo json_encode($result);
         } else {
