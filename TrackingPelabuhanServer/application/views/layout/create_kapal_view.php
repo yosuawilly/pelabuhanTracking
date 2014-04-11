@@ -27,7 +27,7 @@
                     <label>Nama Kapal</label>
                 </td>
                 <td>:
-                    <input type="text" name="namakapal" value="<?php echo $namakapal; ?>"/>
+                    <input type="text" name="namakapal" value="<?php echo $namakapal; ?>" <?=isset($update)?'readonly':''?> />
                 </td>
             </tr>
             <tr class="odd">

@@ -51,13 +51,13 @@ class Rest extends CI_Controller{
         flush();
     }
     
-    public function sendKordinatKapal($namaKapal=NULL, $lat=NULL, $lng=NULL) {
-        if($namaKapal==NULL || $lat==NULL || $lng==NULL) {
+    public function sendKordinatKapal($kodeKapal, $namaKapal=NULL, $lat=NULL, $lng=NULL) {
+        if($kodeKapal==NULL || $namaKapal==NULL || $lat==NULL || $lng==NULL) {
             echo My_Util::create_result(false, 'Parameter tidak lengkap');
             exit();
         }
         
-        if(My_Util::write_kordinat($namaKapal, $lat, $lng)){
+        if(My_Util::write_kordinat($kodeKapal, $namaKapal, $lat, $lng)){
             echo My_Util::create_result(true, 'Sukses');
         } else {
             echo My_Util::create_result(false, 'Gagal write kordinat');
@@ -118,6 +118,15 @@ class Rest extends CI_Controller{
         } else {
             echo My_Util::create_result(false, 'delete failed');
         }
+    }
+    
+    public function read() {
+        $file = fopen('data_kordinat/coba.txt', 'r');
+        while(!feof($file))
+        {
+            echo fgets($file). "<br />";
+        }
+        fclose($file);
     }
     
 }

@@ -35,6 +35,7 @@ class Home extends CI_Controller{
         if(!$this->my_auth->logged_in()) redirect ('auth/login', 'refresh');
         
         $this->load->library('table');
+        $this->load->library('pagination');
         
         $this->load->helper('file');
         
@@ -229,6 +230,59 @@ class Home extends CI_Controller{
         $this->user_data['map'] = $this->googlemaps->create_map();
         
         $this->load->view('lokasi_kapal', $this->user_data);
+    }
+    
+    public function dataLokasiKapal($kodeKapal=NULL, $page=0) {
+        $kode = $this->input->post('namakapal');
+        if($kode!=NULL) redirect('home/dataLokasiKapal/'.$kode, 'refresh');
+        
+        $this->load->model('lokasi_kapal_model', 'lokasi_kapal');
+        
+        $config = array();
+        $per_page = 5;
+        $uri_segment = 4;
+        
+        $this->user_data['title'] = My_Util::getTitle('Data Lokasi Kapal', '-');
+        $this->user_data['data_lokasi'] = true;
+        $this->user_data['error'] = '';
+        $kapals = $this->kapal->findAll();
+        $this->user_data['kapals'] = $kapals;
+        $this->user_data['selected'] = $kodeKapal;
+        
+        if($kodeKapal!=NULL) {
+            $result = $this->lokasi_kapal->getDataLokasiKapal($kodeKapal, $per_page, $page);
+            
+            $this->table->set_template($this->tmpl);
+            $this->table->set_heading('Kode Kapal', 'Lat', 'Lng', 'Tanggal');
+            
+            foreach ($result['rows'] as $lokasi) {
+//                $button_update_delete = '<div style="float:right;"><a style="margin-right:5px;" href="'.base_url().'home/updateKapal/'.$kapal->kode_kapal.'" class="btn btn-warning">
+//                <i class="icon icon-pencil"></i> Update</a>';
+//                $button_update_delete .= '<a href="'.base_url().'home/deleteKapal/'.$kapal->kode_kapal.'" class="btn btn-danger" onclick="return deleteData(this,\''.$kapal->kode_kapal.'\');">
+//                <i class="icon icon-trash"></i> Delete</a></div>';
+                $this->table->add_row(
+                    array('data'=>$lokasi['kode_kapal'], 'class'=>'center', 'style'=>'width:63px;'),
+                    array('data'=>$lokasi['lat'], 'class'=>'center', 'style'=>'width:200px;'),
+                    array('data'=>$lokasi['lng'], 'class'=>'center', 'style'=>'width:200px;'),
+                    array('data'=>$lokasi['tanggal'], 'class'=>'center', 'style'=>'width:auto;')
+                    //array('data'=>$button_update_delete, 'style'=>'width:164px;')
+                );
+            }
+
+            $this->user_data['table'] = $this->table->generate();
+        
+            $config['base_url'] = base_url() . 'home/dataLokasiKapal/'.$kodeKapal;
+            $config['total_rows'] = $result['num_rows'];
+            $config['per_page'] = $per_page;
+            $config['full_tag_open'] = '<p class="paging">';
+            $config['full_tag_close'] = '</p>';
+            $config['uri_segment'] = $uri_segment;
+            $this->pagination->initialize($config);
+            
+            $this->user_data['pagination'] = $this->pagination->create_links();
+        }
+        
+        $this->load->view('data_lokasi', $this->user_data);
     }
 
     public function activeDevice() {

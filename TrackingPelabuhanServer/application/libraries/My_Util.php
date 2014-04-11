@@ -26,8 +26,21 @@ class My_Util {
         return $title . ' ' . self::$default_title;
     }
     
-    public static function write_kordinat($namaKapal=NULL, $lat=NULL, $lng=NULL) {
-        if($namaKapal==NULL || $lat==NULL || $lng==NULL) return FALSE;
+    public static function write_kordinat($kodeKapal=NULL, $namaKapal=NULL, $lat=NULL, $lng=NULL) {
+        if($kodeKapal==NULL || $namaKapal==NULL || $lat==NULL || $lng==NULL) return FALSE;
+        
+        //Save kordinat ke database
+        //$kap = new Kapal_model();
+        $lokasi = new Lokasi_kapal_model();
+        
+        //$kapal = $kap->findBy('nama_kapal', $namaKapal);
+        //if($kapal) {
+            $data = array('kode_kapal'=>$kodeKapal,
+                          'lat'=>$lat,
+                          'lng'=>$lng,
+                          'tanggal'=>date('Y-m-d H:i:s'));
+            $lokasi->save($data);
+        //}
         
         $strKor = $lat . '&' . $lng;
         if(write_file('temp/'.$namaKapal.'.txt', $strKor)){
