@@ -51,6 +51,27 @@ class Rest extends CI_Controller{
         flush();
     }
     
+    /* 
+     * Example : rest/getKordinatKapal3?json=["Titanic","Baracuda"]
+     */
+    public function getKordinatKapal3() {
+        if(!isset($_GET['json'])) {
+            echo My_Util::create_result(false, 'Parameter tidak lengkap');
+            exit();
+        }
+        
+        $json = $_GET['json'];
+        $obj = json_decode(stripslashes($json));
+        
+        while (!($result = My_Util::read_save_kordinat2($obj))) {
+            usleep(10000); // sleep 10ms to unload the CPU
+            clearstatcache();
+        }
+        
+        echo json_encode($result);
+        flush();
+    }
+    
     public function sendKordinatKapal($kodeKapal, $namaKapal=NULL, $lat=NULL, $lng=NULL) {
         if($kodeKapal==NULL || $namaKapal==NULL || $lat==NULL || $lng==NULL) {
             echo My_Util::create_result(false, 'Parameter tidak lengkap');
@@ -121,12 +142,16 @@ class Rest extends CI_Controller{
     }
     
     public function read() {
-        $file = fopen('data_kordinat/coba.txt', 'r');
-        while(!feof($file))
-        {
-            echo fgets($file). "<br />";
-        }
-        fclose($file);
+        /*Read file line by line*/
+//        $file = fopen('data_kordinat/coba.txt', 'r');
+//        while(!feof($file))
+//        {
+//            echo fgets($file). "<br />";
+//        }
+//        fclose($file);
+        
+        /*Read filenames in a directory*/
+        echo json_encode(get_filenames('data_kordinat'));
     }
     
 }

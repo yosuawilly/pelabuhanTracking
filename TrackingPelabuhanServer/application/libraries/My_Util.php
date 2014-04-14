@@ -83,6 +83,35 @@ class My_Util {
         return $kordinat;
     }
     
+    /* $namaKapals is array of kapal's name
+     */
+    public static function read_save_kordinat2($namaKapals) {
+        $filenames = get_filenames('temp');
+        
+        $kordinats = array();
+        
+        foreach ($namaKapals as $namaKapal) {
+            if (in_array($namaKapal.'.txt', $filenames)) {
+                $data = read_file('temp/'.$namaKapal.'.txt');
+                if ($data) {
+                    copy('temp/'.$namaKapal.'.txt', 'data_kordinat/'.$namaKapal.'.txt');
+                    unlink('temp/'.$namaKapal.'.txt');
+                    
+                    $split = explode('&', $data);
+                    $kordinat['namakapal'] = $namaKapal;
+                    $kordinat['lat'] = $split[0];
+                    $kordinat['lng'] = $split[1];
+                    
+                    $kordinats[] = $kordinat;
+                }
+            }
+        }
+        
+        if(count($kordinats) > 0) 
+            return $kordinats;
+        else return false;
+    }
+    
     public static function create_result($status, $fullMessage) {
         return json_encode(array('status'=>$status, 'fullMessage'=>$fullMessage));
     }
