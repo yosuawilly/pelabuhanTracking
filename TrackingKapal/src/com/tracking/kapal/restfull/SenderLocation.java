@@ -40,7 +40,8 @@ public class SenderLocation {
 		}, false);
 		
 		if(kapal!=null && location!=null) {
-			task.execute(Constant.URL_SEND_LOCATION + kapal.getNama_kapal()+"/"+location.getLatitude()+"/"+location.getLongitude(), Constant.REST_GET);
+			//task.execute(Constant.URL_SEND_LOCATION + kapal.getNama_kapal()+"/"+location.getLatitude()+"/"+location.getLongitude(), Constant.REST_GET);
+			task.execute(Constant.URL_SEND_LOCATION + kapal.getKode_kapal() + "/" + kapal.getNama_kapal()+"/"+location.getLatitude()+"/"+location.getLongitude(), Constant.REST_GET);
 		}
 	}
 
