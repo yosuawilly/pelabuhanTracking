@@ -18,6 +18,24 @@ class Rest extends CI_Controller{
         $this->load->model('kapal_model', 'kapal');
         $this->load->model('active_device_model', 'active_device');
     }
+
+    public function getAllKordinatKapal() {
+        $result = array();
+        $kapals = $this->kapal->get_all_kapal_names();
+        foreach ($kapals as $kapal) {
+            $detail = array();
+            $detail['namakapal'] = $kapal['nama_kapal'];
+            if( ($kordinat = My_Util::read_kordinat($kapal['nama_kapal'])) ) {
+                $detail['lat'] = $kordinat['lat'];
+                $detail['lng'] = $kordinat['lng'];
+            } else {
+                $detail['lat'] = NULL;
+                $detail['lng'] = NULL;
+            }
+            $result[] = $detail;
+        }
+        echo json_encode($result);
+    }
     
     public function getKordinatKapal($namaKapal=NULL) {
         if($namaKapal==NULL) {

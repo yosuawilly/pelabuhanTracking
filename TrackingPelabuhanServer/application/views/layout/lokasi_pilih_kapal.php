@@ -1,5 +1,6 @@
 <?php echo $map['js']; ?>
 <script type="text/javascript" src="js/comet.js"></script>
+<script type="text/javascript" src="js/kapal.js"></script>
 <script type="text/javascript">
     var comet = new Comet('rest/getKordinatKapal/Titanic', function (response){
         alert(response);
@@ -12,6 +13,8 @@
     });
     
     var $namaKapal = "";
+    var $kapals;
+    var $marker = [];
     
     function showBtnAction(){
         comet.disconnect();
@@ -20,16 +23,20 @@
         
         $.ajax({
             type : 'get',
-            url : 'rest/getKordinatKapal/'+$namaKapal,
+            //url : 'rest/getKordinatKapal/'+$namaKapal,
+            url : 'rest/getAllKordinatKapal/',
             dataType : 'json',
             success : function(response, status, xhr) {
-                if(response.hasOwnProperty('status')){
-                    //alert(response.fullMessage);
-                    initializeMapAndComet(null, null);
-                } else {
-                    //alert(response.lat);
-                    initializeMapAndComet(response.lat, response.lng);
-                }
+                $kapals = Kapal.getArrayKapal(response);
+                initializeMap(response);
+
+//                if(response.hasOwnProperty('status')){
+//                    //alert(response.fullMessage);
+//                    initializeMapAndComet(null, null);
+//                } else {
+//                    //alert(response.lat);
+//                    initializeMapAndComet(response.lat, response.lng);
+//                }
             },
             complete : function(response) {
                 
@@ -40,6 +47,42 @@
         });
         
         return false;
+    }
+
+    function initializeMap(response) {
+        $('#parent-map1').show();
+        initialize(new google.maps.LatLng(25.363882, 431.044922), false);
+
+        //Generate Marker
+        for (var i=0; i<response.length; i++) {
+            if(response[i].lat != null && response[i].lng != null) {
+                var marker = getNewMarker(new google.maps.LatLng(response[i].lat, response[i].lng));
+                $marker.push(marker);
+            } else {
+                $marker.push(null);
+            }
+        }
+        
+        comet = null;
+        comet = new Comet('rest/getKordinatKapal3?json='+jQuery.toJSON($kapals), function (response){
+            try{
+                for (var i=0; i<response.length; i++) {
+                    var index = jQuery.inArray(response[i].namakapal, $kapals);
+                    if(index != -1) {
+                        if($marker[index] != null) {
+                            $marker[index].setMap(null);
+                            $marker[index] = getNewMarker(new google.maps.LatLng(response[i].lat, response[i].lng));
+                        } else {
+                            $marker[index] = getNewMarker(new google.maps.LatLng(response[i].lat, response[i].lng));
+                        }
+                    }
+                }
+                //alert(jQuery.toJSON(response));
+            } catch (e){
+                alert(e);
+            }
+        });
+        comet.connect();
     }
     
     function initializeMapAndComet(lat, lng) {

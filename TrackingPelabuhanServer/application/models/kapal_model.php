@@ -22,6 +22,13 @@ class Kapal_model extends Super_model{
         
         $this->load->model('lokasi_kapal_model', 'lokasi');
     }
+
+    public function get_all_kapal_names() {
+        $this->db->select($this->nama_kapal);
+        $this->db->from($this->get_table_name());
+        $rowset = $this->db->get();
+        return $rowset->result_array();
+    }
     
     public function get_lokasi($kode_kapal) {
         return $this->lokasi->findBy($this->kode_kapal, $kode_kapal);
