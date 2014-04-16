@@ -8,6 +8,7 @@
     
     jQuery(document).ready(function () {
         $('#show-btn').click(showBtnAction);
+        showBtnAction();
 //        comet.connect();
 //        initialize(new google.maps.LatLng(-25.363882, 131.044922));
     });
@@ -56,7 +57,7 @@
         //Generate Marker
         for (var i=0; i<response.length; i++) {
             if(response[i].lat != null && response[i].lng != null) {
-                var marker = getNewMarker(new google.maps.LatLng(response[i].lat, response[i].lng));
+                var marker = getNewMarker(new google.maps.LatLng(response[i].lat, response[i].lng), response[i].namakapal);
                 $marker.push(marker);
             } else {
                 $marker.push(null);
@@ -71,9 +72,9 @@
                     if(index != -1) {
                         if($marker[index] != null) {
                             $marker[index].setMap(null);
-                            $marker[index] = getNewMarker(new google.maps.LatLng(response[i].lat, response[i].lng));
+                            $marker[index] = getNewMarker(new google.maps.LatLng(response[i].lat, response[i].lng), response[i].namakapal);
                         } else {
-                            $marker[index] = getNewMarker(new google.maps.LatLng(response[i].lat, response[i].lng));
+                            $marker[index] = getNewMarker(new google.maps.LatLng(response[i].lat, response[i].lng), response[i].namakapal);
                         }
                     }
                 }
@@ -143,11 +144,11 @@
         }
     }
     
-    function getNewMarker(location) {
+    function getNewMarker(location, title) {
         var marker = new google.maps.Marker({
           position: location,
           map: map,
-          title: 'Click to zoom',
+          title: (title==undefined) ? 'Click to zoom':title,
           icon: '<?=base_url(). 'css/images/kapal.png'?>'
         });
         
@@ -198,8 +199,8 @@
     <input type="hidden" name="id" value="<?php //echo $id; ?>"/>
     <input type="hidden" name="proses" value="<?php //echo (isset($create))?'create':'update';?>"/>
     <fieldset>
-        <legend>Pilih Kapal</legend>
-        <table>
+        <legend style="display: none;">Pilih Kapal</legend>
+        <table style="display: none;">
             <tr class="odd">
                 <td class="first">
                     <label>Nama Kapal</label>
@@ -215,7 +216,7 @@
             </tr>
         </table><br/>
         <div id="parent-map1" style="display: none;">
-            <center><h3 id="nama-kapal">Titanic</h3></center>
+            <center style="display: none;" ><h3 id="nama-kapal">Titanic</h3></center>
             <div id="map1" style="width: 100%; height: 450px;"></div>
             <br/>
         </div>
@@ -226,7 +227,7 @@
         <?php if($error!=null) {?>
         <div id="pesanerror" style="width: 100%;"><?php echo ''.$error; ?></div><br/>
         <?php } ?>
-        <button id="show-btn" type="submit" class="btn btn-primary">
+        <button id="show-btn" type="submit" class="btn btn-primary" style="display: none;">
             <i class="icon icon-search"></i> Show
         </button>
 <!--        <button type="submit" name="batal" value="batal" class="btn btn-danger">
