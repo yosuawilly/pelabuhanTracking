@@ -9,6 +9,7 @@ import android.os.Process;
 
 public class ForceCloseHandler implements Thread.UncaughtExceptionHandler{
 	
+	@SuppressWarnings("unused")
 	private Context context ;
 	private Activity activity ;
 	private boolean inquiry = true ;

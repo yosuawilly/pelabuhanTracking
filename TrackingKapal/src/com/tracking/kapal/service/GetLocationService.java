@@ -45,6 +45,7 @@ public class GetLocationService extends Service {
 		Toast.makeText(this, "LocationService Started", Toast.LENGTH_LONG).show();
 	}
 	
+	@SuppressWarnings("deprecation")
 	@Override
 	public void onStart(Intent intent, int startId) {
 		super.onStart(intent, startId);
@@ -77,6 +78,7 @@ public class GetLocationService extends Service {
 		return mBinder;
 	}
 	
+	@SuppressWarnings("deprecation")
 	private void showNotification() {
       // In this sample, we'll use the same text for the ticker and the expanded notification
       CharSequence text = Constant.NOTIFICATION_NAME;

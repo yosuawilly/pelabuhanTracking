@@ -2,7 +2,6 @@ package com.tracking.kapal.util;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.util.Date;
 import android.os.Environment;

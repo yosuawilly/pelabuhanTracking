@@ -7,8 +7,8 @@ public final class Constant {
 	
 	public static final String ANDROID_ID = "11";
 	
-	//public static final String BASE_URL = "http://192.168.16.90/TrackingPelabuhanServer/rest/";
-	public static final String BASE_URL = "http://pelabuhan.esy.es/rest/";
+	public static final String BASE_URL = "http://192.168.16.24/TrackingPelabuhanServer/rest/";
+	//public static final String BASE_URL = "http://pelabuhan.esy.es/rest/";
 	
 	public static final String DB_NAME="TrackingKapalDB";
 	public static final String DB_PATH="/data/data/com.tracking.kapal/databases/";

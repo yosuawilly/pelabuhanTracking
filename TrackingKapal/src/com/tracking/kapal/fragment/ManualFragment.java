@@ -5,8 +5,6 @@ import android.content.Context;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -24,6 +22,7 @@ public class ManualFragment extends SherlockFragment implements OnClickListener{
 	
 	private Context context;
 	private ViewGroup viewGroup;
+	@SuppressWarnings("unused")
 	private FragmentListener fragmentListener;
 	private LocationManager locationManager;
 	

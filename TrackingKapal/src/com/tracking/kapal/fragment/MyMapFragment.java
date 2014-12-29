@@ -14,6 +14,7 @@ import com.tracking.kapal.R;
 import com.tracking.kapal.listener.FragmentListener;
 import com.tracking.kapal.util.Constant;
 import com.tracking.kapal.util.Gps;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.location.Criteria;
@@ -21,7 +22,6 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -34,6 +34,7 @@ public class MyMapFragment extends SherlockFragment implements OnClickListener, 
 	
 	private Context context;
 	private ViewGroup viewGroup;
+	@SuppressWarnings("unused")
 	private FragmentListener fragmentListener;
 	
 	private GoogleMap googleMap;

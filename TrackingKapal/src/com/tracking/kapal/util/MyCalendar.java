@@ -1,20 +1,15 @@
 package com.tracking.kapal.util;
 
+import android.annotation.SuppressLint;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-import java.util.Timer;
-import java.util.TimerTask;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.util.Log;
-import android.widget.TextView;
 
 public class MyCalendar{
 	
+		@SuppressLint("SimpleDateFormat") 
 		public static String toString(Date date){
 			SimpleDateFormat sdf = new SimpleDateFormat(Constant.SIMPLE_DATE_FORMAT);
 			if (date==null) {

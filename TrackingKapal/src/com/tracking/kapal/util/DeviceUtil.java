@@ -2,9 +2,6 @@ package com.tracking.kapal.util;
 
 import java.util.Random;
 
-import android.content.Context;
-import android.telephony.TelephonyManager;
-
 public class DeviceUtil {
 	
 	public static String getDeviceIdCdma(String imei){
@@ -57,6 +54,7 @@ public class DeviceUtil {
 		return false;
 	}
 	
+	@SuppressWarnings("unused")
 	private static String replace(String str, int index, char replace){     
 	    if(str==null){
 	        return str;
@@ -68,6 +66,7 @@ public class DeviceUtil {
 	    return String.valueOf(chars);       
 	}
 	
+	@SuppressWarnings("unused")
 	private static String addRandomNumber(String imeiCdma, int difCharDeviceId){
 		Random randomGenerator = new Random();
         int randomInt = randomGenerator.nextInt(getDiferentRandomNumber(difCharDeviceId));
