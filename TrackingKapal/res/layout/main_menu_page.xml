@@ -26,10 +26,14 @@
         android:gravity="center_vertical"
         android:padding="8dp">
         
-        <ImageView 
-            android:layout_width="50px"
-            android:layout_height="50px"
-            android:background="@drawable/ship"/>
+        <LinearLayout 
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+            <ImageView 
+	            android:layout_width="50px"
+	            android:layout_height="50px"
+	            android:background="@drawable/ship"/>
+        </LinearLayout>
         
         <LinearLayout 
             android:layout_width="fill_parent"
@@ -61,6 +65,15 @@
                     style="@style/default_textview"
 	                android:text="Titanic" />
             </LinearLayout>
+            
+            <Button 
+                android:id="@+id/button_schedule"
+                android:layout_width="wrap_content"
+                android:layout_height="27dp"
+                android:background="@drawable/next_button"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                android:text="Jadwal"/>
         </LinearLayout>
         
     </LinearLayout>

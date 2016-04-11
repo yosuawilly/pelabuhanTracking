@@ -1,12 +1,21 @@
 package com.tracking.kapal.activity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.actionbarsherlock.app.ActionBar;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.tracking.kapal.R;
 import com.tracking.kapal.activity.base.BaseMyActionBarActivity;
 import com.tracking.kapal.adapter.FragmentAdapter;
@@ -14,11 +23,17 @@ import com.tracking.kapal.customcomponent.CustomViewPager;
 import com.tracking.kapal.database.PreferenceHelper;
 import com.tracking.kapal.listener.FragmentListener;
 import com.tracking.kapal.model.Kapal;
+import com.tracking.kapal.model.Schedule;
+import com.tracking.kapal.restfull.AsyncTaskCompleteListener;
+import com.tracking.kapal.restfull.CallWebServiceTask;
 import com.tracking.kapal.util.Constant;
 import com.tracking.kapal.util.TabSetupTools;
+import com.tracking.kapal.util.Utility;
 import com.tracking.kapal.util.TabSetupTools.OnTabChanged;
 
-public class MainMenuActivity extends BaseMyActionBarActivity implements FragmentListener, OnPageChangeListener, OnTabChanged{
+public class MainMenuActivity extends BaseMyActionBarActivity 
+	implements FragmentListener, OnPageChangeListener, 
+	OnTabChanged, OnClickListener, AsyncTaskCompleteListener<Object> {
 	
     private ActionBar actionBar;
     private CustomViewPager viewPager;
@@ -80,6 +95,8 @@ public class MainMenuActivity extends BaseMyActionBarActivity implements Fragmen
     		((TextView) findViewById(R.id.kodeKapalText)).setText(kapal.getKode_kapal());
     		((TextView) findViewById(R.id.namaKapalText)).setText(kapal.getNama_kapal());
     	}
+    	
+    	((Button) findViewById(R.id.button_schedule)).setOnClickListener(this);
     	
     	//ViewGroup decor = (ViewGroup) getWindow().getDecorView();
 		//ViewGroup child = (ViewGroup) decor.getChildAt(0);
@@ -164,6 +181,48 @@ public class MainMenuActivity extends BaseMyActionBarActivity implements Fragmen
 			viewPager.setCurrentItem(1);
 		} else if(tabId.equals(tabs[2])) {
 			viewPager.setCurrentItem(2);
+		}
+	}
+
+	@Override
+	public void onClick(View v) {
+		switch (v.getId()) {
+		case R.id.button_schedule:
+			Schedule schedule = new PreferenceHelper(this, Constant.SETTING_KAPAL).
+					getObject(Constant.SCHEDULE, Schedule.class);
+			
+			if (schedule == null) {
+				Kapal kapal = new PreferenceHelper(this, Constant.SETTING_KAPAL).
+						getObject(Constant.KAPAL, Kapal.class);
+		
+				CallWebServiceTask task = new CallWebServiceTask(this, this);
+				task.execute(Constant.URL_GET_AKTIF_SCHEDULE + kapal.getKode_kapal(), Constant.REST_GET);
+			}
+			else {
+				Intent intent = new Intent(this, CurrentScheduleActivity.class);
+				startActivity(intent);
+			}
+			
+			break;
+		default:
+			break;
+		}
+	}
+
+	@Override
+	public void onTaskComplete(Object... params) {
+		String result = (String) params[0];
+		if (Utility.cekValidResult(result, this)) {
+			Gson gson = new GsonBuilder().setDateFormat(Constant.DATE_FORMAT).create();
+			ArrayList<Schedule> schedules = gson.fromJson(result, new TypeToken<List<Schedule>>(){}.getType());
+			if (schedules.size() == 0) {
+				Utility.showMessage(this, "Tutup", "Tidak ada jadwal keberangkatan");
+				return;
+			}
+			
+			Intent intent = new Intent(this, JadwalListActivity.class);
+			intent.putParcelableArrayListExtra("schedule", schedules);
+			startActivity(intent);
 		}
 	}
 

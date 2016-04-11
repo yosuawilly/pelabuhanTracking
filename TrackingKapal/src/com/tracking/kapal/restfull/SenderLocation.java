@@ -5,6 +5,7 @@ import org.json.JSONObject;
 
 import com.tracking.kapal.database.PreferenceHelper;
 import com.tracking.kapal.model.Kapal;
+import com.tracking.kapal.model.Schedule;
 import com.tracking.kapal.util.Constant;
 
 import android.content.Context;
@@ -39,9 +40,17 @@ public class SenderLocation {
 			}
 		}, false);
 		
+		Schedule schedule = new PreferenceHelper(context, Constant.SETTING_KAPAL).getObject(Constant.SCHEDULE, Schedule.class);
+		
 		if(kapal!=null && location!=null) {
 			//task.execute(Constant.URL_SEND_LOCATION + kapal.getNama_kapal()+"/"+location.getLatitude()+"/"+location.getLongitude(), Constant.REST_GET);
-			task.execute(Constant.URL_SEND_LOCATION + kapal.getKode_kapal() + "/" + kapal.getNama_kapal()+"/"+location.getLatitude()+"/"+location.getLongitude(), Constant.REST_GET);
+			if (schedule == null) {
+				task.execute(Constant.URL_SEND_LOCATION + kapal.getKode_kapal() + "/" + kapal.getNama_kapal()+"/"+location.getLatitude()+"/"+location.getLongitude(), Constant.REST_GET);
+			}
+			else {
+				task.execute(Constant.URL_SEND_LOCATION_WITH_SCHEDULE + kapal.getKode_kapal() + "/" + 
+						kapal.getNama_kapal()+"/"+location.getLatitude()+"/"+location.getLongitude()+"/"+schedule.getId(), Constant.REST_GET);
+			}
 		}
 	}
 
