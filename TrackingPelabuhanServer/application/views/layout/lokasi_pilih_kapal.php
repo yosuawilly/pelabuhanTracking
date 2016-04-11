@@ -16,6 +16,7 @@
     var $namaKapal = "";
     var $kapals;
     var $marker = [];
+    var $status = [];
     
     function showBtnAction(){
         comet.disconnect();
@@ -56,8 +57,10 @@
 
         //Generate Marker
         for (var i=0; i<response.length; i++) {
-            if(response[i].lat != null && response[i].lng != null) {
-                var marker = getNewMarker(new google.maps.LatLng(response[i].lat, response[i].lng), response[i].namakapal);
+            $status.push(response[i].status);
+
+            if (response[i].lat != null && response[i].lng != null) {
+                var marker = getNewMarker(new google.maps.LatLng(response[i].lat, response[i].lng), response[i].namakapal, i);
                 $marker.push(marker);
             } else {
                 $marker.push(null);
@@ -72,9 +75,9 @@
                     if(index != -1) {
                         if($marker[index] != null) {
                             $marker[index].setMap(null);
-                            $marker[index] = getNewMarker(new google.maps.LatLng(response[i].lat, response[i].lng), response[i].namakapal);
+                            $marker[index] = getNewMarker(new google.maps.LatLng(response[i].lat, response[i].lng), response[i].namakapal, index);
                         } else {
-                            $marker[index] = getNewMarker(new google.maps.LatLng(response[i].lat, response[i].lng), response[i].namakapal);
+                            $marker[index] = getNewMarker(new google.maps.LatLng(response[i].lat, response[i].lng), response[i].namakapal, index);
                         }
                     }
                 }
@@ -86,7 +89,7 @@
         comet.connect();
     }
     
-    function initializeMapAndComet(lat, lng) {
+    /*function initializeMapAndComet(lat, lng) {
         $('#nama-kapal').html($namaKapal);
         $('#parent-map1').show();
         if(lat===null & lng===null)
@@ -106,7 +109,7 @@
             }
         });
         comet.connect();
-    }
+    }*/
     
     var map;
     var marker;
@@ -144,12 +147,26 @@
         }
     }
     
-    function getNewMarker(location, title) {
+    function getNewMarker(location, title, indexStatus) {
+        stat = $status[indexStatus];
+
+        var iconUrl = '<?=base_url(). 'css/images/kapal-green.png'?>';
+
+        if (stat == 'o') {
+            iconUrl = '<?=base_url(). 'css/images/kapal-blue.png'?>';
+        }
+        if (stat == 'l') {
+            iconUrl = '<?=base_url(). 'css/images/kapal-red.png'?>';
+        }
+        if (stat == 'a') {
+            iconUrl = '<?=base_url(). 'css/images/kapal-yellow.png'?>';
+        }
+
         var marker = new google.maps.Marker({
           position: location,
           map: map,
           title: (title==undefined) ? 'Click to zoom':title,
-          icon: '<?=base_url(). 'css/images/kapal.png'?>'
+          icon: iconUrl
         });
         
         google.maps.event.addListener(marker, 'click', function() {

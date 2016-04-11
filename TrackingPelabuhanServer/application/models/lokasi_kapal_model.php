@@ -16,6 +16,7 @@ class Lokasi_kapal_model extends Super_model{
     public $lat = 'lat';
     public $lng = 'lng';
     public $tanggal = 'tanggal';
+    public $schedule_id = 'schedule_id';
     
     public function save($data) {
 //        if( parent::findBy($this->kode_kapal, $data[$this->kode_kapal]) ) {
@@ -38,6 +39,25 @@ class Lokasi_kapal_model extends Super_model{
         $result['rows'] = $rowset->result_array();
         
         return $result;
+    }
+
+    public function getLastLokasi($kodeKapal) {
+        $this->db->from('t_lokasi_kapal');
+        $this->db->where('kode_kapal', $kodeKapal);
+        $this->db->order_by('tanggal', 'DESC');
+        $this->db->limit(1, 0);
+
+        $rowset = $this->db->get();
+        return $rowset->row();
+    }
+
+    public function getAllBySchedule($scheduleId) {
+        $this->db->from('t_lokasi_kapal');
+        $this->db->where('schedule_id', $scheduleId);
+        $this->db->order_by('tanggal', 'ASC');
+
+        $rowset = $this->db->get();
+        return $rowset->result_array();
     }
     
     public function get_primary_column() {

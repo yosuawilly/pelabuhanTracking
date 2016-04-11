@@ -62,7 +62,7 @@
             <center>
                 <hr/>
                 <p>Pelabuhan tracking Server Copyright &copy; 2013. All Right Reserved.</p>
-                Design by Yosua Willy Handika
+                Design by Anonymous
             </center>
         </div>
     </body>

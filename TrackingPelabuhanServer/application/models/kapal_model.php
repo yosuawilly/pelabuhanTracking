@@ -10,7 +10,7 @@
  *
  * @author LenovoDwidasa
  */
-class Kapal_model extends Super_model{
+class Kapal_model extends Super_model {
     
     public $kode_kapal = 'kode_kapal';
     public $nama_kapal = 'nama_kapal';
@@ -72,6 +72,30 @@ class Kapal_model extends Super_model{
             return array('exist'=>TRUE, 'error'=>'Nama kapal ' .$nama_kapal. ' sudah ada di database');
         } else
             return array('exist'=>FALSE, 'error'=>'');
+    }
+
+    public function getKapalAktifSchedule() {
+        $strSQL = 'SELECT k.*,s.id as schedule_id,s.jadwal_datang from t_kapal k JOIN t_schedule s on k.kode_kapal=s.kode_kapal
+                   WHERE s.done = false AND berangkat IS NOT NULL AND datang IS NULL';
+
+        $query = $this->db->query($strSQL);
+        return $query->result();
+    }
+
+    public function getKapalWithStatus() {
+        $strSQL = "select *,(
+  select (case when berangkat is null then 'n'
+  when berangkat is not null and datang is null and done = false and now() > jadwal_datang then 'l'
+  when berangkat is not null and datang is null and done = false then 'o'
+  when berangkat is not null and datang is not null and done = true and datang > jadwal_datang then 'l'
+  when berangkat is not null and datang is not null and done = true then 'a' end) as status from (
+     select * from t_schedule where kode_kapal=k.kode_kapal
+     order by datang desc,berangkat asc limit 1
+  ) as d1
+) as status from t_kapal as k";
+
+        $query = $this->db->query($strSQL);
+        return $query->result();
     }
 
     public function get_primary_column() {

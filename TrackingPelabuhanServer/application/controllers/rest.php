@@ -17,20 +17,31 @@ class Rest extends CI_Controller{
         
         $this->load->model('kapal_model', 'kapal');
         $this->load->model('active_device_model', 'active_device');
+        $this->load->model('lokasi_kapal_model', 'lokasi_kapal');
+        $this->load->model('schedule_model', 'schedule');
     }
 
     public function getAllKordinatKapal() {
         $result = array();
-        $kapals = $this->kapal->get_all_kapal_names();
+        //$kapals = $this->kapal->get_all_kapal_names();
+        //$kapals = $this->kapal->findAll();
+        $kapals = $this->kapal->getKapalWithStatus();
         foreach ($kapals as $kapal) {
             $detail = array();
-            $detail['namakapal'] = $kapal['nama_kapal'];
-            if( ($kordinat = My_Util::read_kordinat($kapal['nama_kapal'])) ) {
+            $detail['namakapal'] = $kapal->nama_kapal;
+            $detail['status'] = $kapal->status;
+            if( ($kordinat = My_Util::read_kordinat($kapal->nama_kapal)) ) {
                 $detail['lat'] = $kordinat['lat'];
                 $detail['lng'] = $kordinat['lng'];
             } else {
-                $detail['lat'] = NULL;
-                $detail['lng'] = NULL;
+                $k = $this->lokasi_kapal->getLastLokasi($kapal->kode_kapal);
+                if ($k) {
+                    $detail['lat'] = $k->lat;
+                    $detail['lng'] = $k->lng;
+                } else {
+                    $detail['lat'] = NULL;
+                    $detail['lng'] = NULL;
+                }
             }
             $result[] = $detail;
         }
@@ -89,14 +100,27 @@ class Rest extends CI_Controller{
         echo json_encode($result);
         flush();
     }
+
+    public function sendKordinatKapal($kodeKapal=NULL, $namaKapal=NULL, $lat=NULL, $lng=NULL) {
+        if ($kodeKapal==NULL || $namaKapal==NULL || $lat==NULL || $lng==NULL) {
+            echo My_Util::create_result(false, 'Parameter tidak lengkap');
+            exit();
+        }
+
+        if (My_Util::write_kordinat($kodeKapal, $namaKapal, $lat, $lng)) {
+            echo My_Util::create_result(true, 'Sukses');
+        } else {
+            echo My_Util::create_result(false, 'Gagal write kordinat');
+        }
+    }
     
-    public function sendKordinatKapal($kodeKapal, $namaKapal=NULL, $lat=NULL, $lng=NULL) {
-        if($kodeKapal==NULL || $namaKapal==NULL || $lat==NULL || $lng==NULL) {
+    public function sendKordinatWithScheduleId($kodeKapal=NULL, $namaKapal=NULL, $lat=NULL, $lng=NULL, $scheduleId) {
+        if ($kodeKapal==NULL || $namaKapal==NULL || $lat==NULL || $lng==NULL) {
             echo My_Util::create_result(false, 'Parameter tidak lengkap');
             exit();
         }
         
-        if(My_Util::write_kordinat($kodeKapal, $namaKapal, $lat, $lng)){
+        if (My_Util::write_kordinat($kodeKapal, $namaKapal, $lat, $lng, $scheduleId)) {
             echo My_Util::create_result(true, 'Sukses');
         } else {
             echo My_Util::create_result(false, 'Gagal write kordinat');
@@ -157,6 +181,109 @@ class Rest extends CI_Controller{
         } else {
             echo My_Util::create_result(false, 'delete failed');
         }
+    }
+
+    public function getAktifSchedule($kodeKapal = NULL) {
+        if($kodeKapal == NULL) {
+            echo My_Util::create_result(false, 'Parameter tidak lengkap');
+            exit();
+        }
+
+        $schedules = $this->schedule->getAktifByKodeKapal($kodeKapal);
+
+        echo json_encode($schedules);
+    }
+
+    public function getRunningSchedule($kodeKapal = NULL) {
+        if($kodeKapal == NULL) {
+            echo My_Util::create_result(false, 'Parameter tidak lengkap');
+            exit();
+        }
+
+        $schedules = $this->schedule->getRunningByKodeKapal($kodeKapal);
+
+        echo json_encode($schedules);
+    }
+
+    public function startStopSchedule($scheduleId = NULL, $isStart = 1) {
+        $schedule = $this->schedule->findBy('id',$scheduleId);
+        if (!$schedule) {
+            echo My_Util::create_result(false, 'Schedule tidak ditemukan');
+            exit();
+        }
+
+        if ($isStart == 1) { // keberangkatan
+            $schedule->berangkat = date('Y-m-d h:i:s', time());
+        }
+        else if ($isStart == 0) { // kedatangan
+            $schedule->datang = date('Y-m-d h:i:s', time());
+            $schedule->done = 'true';
+        }
+
+        $this->schedule->update($schedule->id, $schedule);
+
+        echo My_Util::create_result(true, 'sukses');
+    }
+
+    public function getKapalWithAktifSchedule() {
+        $result = array();
+
+        $kapals = $this->kapal->getKapalAktifSchedule();
+        foreach ($kapals as $kapal)
+        {
+            $lokasi = $this->lokasi_kapal->getAllBySchedule($kapal->schedule_id);
+            $result[] = [
+                'kapal' => $kapal,
+                'lokasi' => $lokasi
+            ];
+        }
+
+        echo json_encode($result);
+    }
+
+    public function cekLateSchedule() {
+        if (!isset($_GET['json'])) {
+            echo My_Util::create_result(false, 'Parameter tidak lengkap');
+            exit();
+        }
+
+        $json = $_GET['json'];
+        $obj = json_decode(stripslashes($json), true);
+
+        $param = [];
+        foreach ($obj as $o) {
+            $param[] = $o;
+        }
+        $param = "'" . implode("','", $param) . "'";
+
+        $result = $this->schedule->getLateScheduleByNamaKapal($param);
+
+        echo json_encode($result);
+        flush();
+    }
+
+    /**
+     * cek late schedule by schedule id
+     * */
+    public function cekLateSchedule2() {
+        if (!isset($_GET['json'])) {
+            echo My_Util::create_result(false, 'Parameter tidak lengkap');
+            exit();
+        }
+
+        $json = $_GET['json'];
+        $obj = json_decode(stripslashes($json), true);
+
+        $param = [-1];
+        foreach ($obj as $o) {
+            $param[] = $o;
+        }
+        $param = implode(",", $param);
+
+        $result = $this->schedule->getLateScheduleByScheduleId($param);
+
+        echo json_encode($result);
+        flush();
     }
     
     public function read() {

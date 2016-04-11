@@ -26,7 +26,7 @@ class My_Util {
         return $title . ' ' . self::$default_title;
     }
     
-    public static function write_kordinat($kodeKapal=NULL, $namaKapal=NULL, $lat=NULL, $lng=NULL) {
+    public static function write_kordinat($kodeKapal=NULL, $namaKapal=NULL, $lat=NULL, $lng=NULL, $scheduleId=NULL) {
         if($kodeKapal==NULL || $namaKapal==NULL || $lat==NULL || $lng==NULL) return FALSE;
         
         //Save kordinat ke database
@@ -38,7 +38,8 @@ class My_Util {
             $data = array('kode_kapal'=>$kodeKapal,
                           'lat'=>$lat,
                           'lng'=>$lng,
-                          'tanggal'=>date('Y-m-d H:i:s'));
+                          'tanggal'=>date('Y-m-d H:i:s'),
+                          'schedule_id' => $scheduleId);
             $lokasi->save($data);
         //}
         
